@@ -9,6 +9,6 @@ define('DB_NAME', '_YOUR_DBNAME_');
 // App Root
 define('APPROOT', dirname(dirname(__FILE__)));
 // URL Root
-define('URLROOT', '_YOUR_URL_');
+define('URLROOT', 'http://localhost/php_admin');
 // Site Name
-define('SITENAME', '_YOUR_SITENAME_');
+define('SITENAME', 'Php Admin');

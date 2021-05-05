@@ -1,5 +1,8 @@
 <?php
-  require_once '../app/bootstrap.php';
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-  // Init Core Library
-  $init = new Core;
+require_once '../vendor/autoload.php';
+
+// Init Core Library
+$init = new \App\Libraries\Core;

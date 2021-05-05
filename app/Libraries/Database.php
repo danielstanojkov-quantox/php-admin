@@ -1,11 +1,18 @@
 <?php
+
+namespace App\Libraries;
+
+use \Pdo;
+use \PDOException;
+
 /*
-   * PDO Database Class
-   * Connect to database
-   * Create prepared statements
-   * Bind values
-   * Return rows and results
-   */
+* PDO Database Class
+* Connect to database
+* Create prepared statements
+* Bind values
+* Return rows and results
+*/
+
 class Database
 {
   private $host = DB_HOST;
