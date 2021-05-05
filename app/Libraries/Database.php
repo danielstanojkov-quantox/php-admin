@@ -2,8 +2,11 @@
 
 namespace App\Libraries;
 
+use App\Helpers\Redirect;
+use App\Helpers\Session;
 use \Pdo;
 use \PDOException;
+
 
 /*
 * PDO Database Class
@@ -15,19 +18,15 @@ use \PDOException;
 
 class Database
 {
-  private $host = DB_HOST;
-  private $user = DB_USER;
-  private $pass = DB_PASS;
-  private $dbname = DB_NAME;
-
   private $dbh;
   private $stmt;
   private $error;
 
-  public function __construct()
+  public function __construct($host, $username, $password)
   {
+ 
     // Set DSN
-    $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
+    $dsn = "mysql:host=$host";
     $options = array(
       PDO::ATTR_PERSISTENT => true,
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -35,10 +34,15 @@ class Database
 
     // Create PDO instance
     try {
-      $this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
+      $this->dbh = new PDO($dsn, $username, $password, $options);
     } catch (PDOException $e) {
       $this->error = $e->getMessage();
-      echo $this->error;
+
+      Session::flash('login_failed', $this->error);
+      Session::flash('host', $host);
+      Session::flash('username', $username);
+      
+      Redirect::To('/login');
     }
   }
 

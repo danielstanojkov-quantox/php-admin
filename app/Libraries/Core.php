@@ -10,7 +10,7 @@ namespace App\Libraries;
 
 class Core
 {
-  protected $currentController = 'Pages';
+  protected $currentController = 'Dashboard';
   protected $currentMethod = 'index';
   protected $params = [];
 
@@ -18,12 +18,12 @@ class Core
   {
     $url = $this->getUrl();
 
-    if (isset($url[0]) && file_exists('../app/Controllers/' . ucwords($url[0]) . '.php')) {
+    if (isset($url[0]) && file_exists('../app/Http/Controllers/' . ucwords($url[0]) . '.php')) {
       $this->currentController = ucwords($url[0]);
       unset($url[0]);
     }
 
-    $class = "App\Controllers\\" . $this->currentController;
+    $class = "App\Http\Controllers\\" . $this->currentController;
     $this->currentController = new $class;
 
     if (isset($url[1])) {
