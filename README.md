@@ -1,2 +1,1 @@
-# php_admin
-PhpMyAdmin Clone
+# PhpMyAdmin Clone
