@@ -25,6 +25,18 @@ class Storage
         static::setUsers($users);
     }
 
+    public static function getUserById($id)
+    {
+        $users = static::getUsers();
+
+        $user = array_filter($users, function ($user) use ($id) {
+            return $user->id = $id;
+        });
+   
+        return $user[0];
+    }
+
+
     public static function getUsers()
     {
         return json_decode(
