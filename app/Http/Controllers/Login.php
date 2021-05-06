@@ -7,16 +7,19 @@ use App\Helpers\Redirect;
 use App\Libraries\Controller;
 use App\Libraries\Database;
 use App\Models\User;
+use App\Http\Middleware\IsAuthenticatedMiddleware;
 
 class Login extends Controller
 {
     public function index()
     {
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+        if (IsAuthenticatedMiddleware::handle()) Redirect::To('/dashboard');
+
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->login();
             return;
         }
-
+    
         $data = [];
         $this->view('auth/login', $data);
     }
@@ -26,7 +29,7 @@ class Login extends Controller
         $host = $_POST['host'];
         $username = $_POST['username'];
         $password = $_POST['password'];
-     
+
         new Database($host, $username, $password);
 
         $user = new User($host, $username, $password);
