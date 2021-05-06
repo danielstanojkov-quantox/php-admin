@@ -6,7 +6,9 @@
             "email": "daniel.stanojkov@quantox.com"
         }
     ],
-    "require": {},
+    "require": {
+        "nesbot/carbon": "^2.47"
+    },
     "autoload": {
         "psr-4": {
             "App\\": "app/"

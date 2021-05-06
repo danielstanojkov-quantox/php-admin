@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Cookie;
+use App\Helpers\Redirect;
 use App\Libraries\Controller;
 use App\Libraries\Database;
+use App\Models\User;
 
 class Login extends Controller
 {
@@ -25,5 +28,12 @@ class Login extends Controller
         $password = $_POST['password'];
      
         new Database($host, $username, $password);
+
+        $user = new User($host, $username, $password);
+        $user = $user->save();
+        
+        Cookie::set('user_id', $user['id']);
+
+        Redirect::To('/dashboard');
     }
 }
