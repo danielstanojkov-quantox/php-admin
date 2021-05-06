@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Cookie;
+use App\Helpers\Hash;
 use App\Helpers\Redirect;
 use App\Libraries\Controller;
 use App\Libraries\Database;

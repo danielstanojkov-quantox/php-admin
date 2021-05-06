@@ -13,6 +13,8 @@ class Dashboard extends Controller
   {
     if (!IsAuthenticatedMiddleware::handle()) Redirect::To('/login');
 
+    // Connect to database
+
     $data = [];
 
     $this->view('dashboard/index', $data);

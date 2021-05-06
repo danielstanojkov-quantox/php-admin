@@ -8,7 +8,7 @@ class Cookie
 {
     public static function get($name)
     {
-        return $_COOKIE[$name];
+        return Hash::decrypt($_COOKIE[$name]);
     }
 
     public static function set(
@@ -21,6 +21,7 @@ class Cookie
         $httponly = false
     ) {
         $expires = Carbon::now()->timestamp + (EXPIRATION_TIME * 60);
+        $value = Hash::encrypt($value);
         setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
     }
 

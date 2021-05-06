@@ -14,10 +14,21 @@ class Storage
         static::setUsers($users);
     }
 
+    public static function removeUserById($id)
+    {
+        $users = static::getUsers();
+
+        $users = array_filter($users, function ($user) use ($id) {
+            return $user->id != $id;
+        });
+
+        static::setUsers($users);
+    }
+
     public static function getUsers()
     {
         return json_decode(
-            File::get(USERS)
+            Hash::decrypt(File::get(USERS))
         );
     }
 
@@ -25,7 +36,7 @@ class Storage
     {
         File::put(
             USERS,
-            json_encode($users)
+            Hash::encrypt(json_encode($users))
         );
     }
 }
