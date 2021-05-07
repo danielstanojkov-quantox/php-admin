@@ -17,7 +17,6 @@ class Dashboard extends Controller
   {
     if (!IsAuthenticatedMiddleware::handle()) Redirect::to('/login');
 
-    $data = [];
-    $this->view('dashboard/index', $data);
+    $this->view('dashboard/index', $data = []);
   }
 }

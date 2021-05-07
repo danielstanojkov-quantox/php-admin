@@ -43,15 +43,15 @@ function env($key): mixed
     $data = explode("\n", $data);
 
     $data = array_filter($data, function ($entry) use ($key) {
-        $str =  strstr($entry, '=', true);
-        return $str == $key ? true : false;
+        $string =  strstr($entry, '=', true);
+        return $string === $key;
     });
 
     if (count($data) == 0) return null;
 
     $data = implode('', $data);
-    $str = strstr($data, '=');
-    $str = trim(substr($str, 1));
+    $string = strstr($data, '=');
+    $string = trim(substr($string, 1));
 
-    return $str;
+    return $string;
 }

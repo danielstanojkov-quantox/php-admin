@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Cookie;
 use App\Helpers\Redirect;
+use App\Helpers\Server;
 use App\Libraries\Controller;
 use App\Libraries\Database;
 use App\Models\User;
@@ -18,15 +19,13 @@ class Login extends Controller
      */
     public function index(): mixed
     {
-        if (IsAuthenticatedMiddleware::handle()) Redirect::to('/dashboard');
+        if (IsAuthenticatedMiddleware::handle())
+            Redirect::to('/dashboard');
 
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $this->login();
-            return null;
-        }
+        if (Server::requestIs('post'))
+            return $this->login();
 
-        $data = [];
-        return $this->view('auth/login', $data);
+        return $this->view('auth/login', $data = []);
     }
 
     /**

@@ -5,7 +5,7 @@ namespace App\Libraries;
 use App\Helpers\Cookie;
 use App\Helpers\Redirect;
 use App\Helpers\Session;
-use App\Helpers\Storage;
+use App\Helpers\UserStorage;
 use \Pdo;
 use \PDOException;
 use PDOStatement;
@@ -41,7 +41,7 @@ class Database
   public static function init(): void
   {
     if (Cookie::exists('user_id')) {
-      $user = Storage::getUserById(Cookie::get('user_id'));
+      $user = UserStorage::getUserById(Cookie::get('user_id'));
       static::connect($user->host, $user->username, $user->password);
     }
   }

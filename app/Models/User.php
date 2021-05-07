@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Helpers\Storage;
+use App\Helpers\UserStorage;
 use App\Libraries\Controller;
 use Carbon\Carbon;
 
@@ -57,7 +57,7 @@ class User extends Controller
             'password' => $this->password
         ];
 
-        Storage::add($user);
+        UserStorage::add($user);
 
         return $user;
     }
