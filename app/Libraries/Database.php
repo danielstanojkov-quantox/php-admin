@@ -19,6 +19,8 @@ use \PDOException;
 
 class Database
 {
+  public static $database;
+  public static $table;
   public static $dbh;
   public static $stmt;
   public static $error;
@@ -54,6 +56,25 @@ class Database
       Redirect::To('/login');
     }
   }
+
+
+  public static function all()
+  {
+    $stmt = self::$dbh->query('SHOW DATABASES;');
+    return $stmt->fetchAll(PDO::FETCH_OBJ);
+  }
+
+  public static function tables($database)
+  {
+    try {
+      $stmt = self::$dbh->query("SHOW TABLES FROM $database;");
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (\Throwable $th) {
+      session('db_not_found', "Database doesn't exist");
+      Redirect::To('/dashboard');
+    }
+  }
+
 
   // Prepare statement with query
   public function query($sql)
