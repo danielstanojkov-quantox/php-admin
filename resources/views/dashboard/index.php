@@ -1,12 +1,16 @@
 <?php require APPROOT . '/resources/views/inc/header.php'; ?>
 
 
+<div class="d-flex">
 
+    <div class="w-25">
+    s
+    </div>
 
-<h1>Dashboard</h1>
-
-
-
+    <div class="w-75 bg-white" style="height: 100vh;">
+    t
+    </div>
+</div>
 
 
 <?php require APPROOT . '/resources/views/inc/footer.php'; ?>
