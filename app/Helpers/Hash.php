@@ -6,43 +6,61 @@ use Exception;
 
 class Hash
 {
-    public static function encrypt($pure_string)
+    /**
+     * Encrypts a value
+     *
+     * @param string $pure_string
+     * @return string
+     */
+    public static function encrypt($pureString): string
     {
-        $encryption_key = env('APP_KEY');
-        if(!$encryption_key) throw new Exception("APP_KEY must be set.");
-        $cipher     = 'AES-256-CBC';
-        $options    = OPENSSL_RAW_DATA;
-        $hash_algo  = 'sha256';
-        $sha2len    = 32;
+        $encryptionKey = env('APP_KEY');
+        if (!$encryptionKey) throw new Exception("APP_KEY must be set.");
+        $cipher = 'AES-256-CBC';
+        $options = OPENSSL_RAW_DATA;
+        $hashAlgo = 'sha256';
         $ivlen = openssl_cipher_iv_length($cipher);
         $iv = openssl_random_pseudo_bytes($ivlen);
-        $ciphertext_raw = openssl_encrypt($pure_string, $cipher, $encryption_key, $options, $iv);
-        $hmac = hash_hmac($hash_algo, $ciphertext_raw, $encryption_key, true);
-        return $iv . $hmac . $ciphertext_raw;
+        $ciphertextRaw = openssl_encrypt($pureString, $cipher, $encryptionKey, $options, $iv);
+        $hmac = hash_hmac($hashAlgo, $ciphertextRaw, $encryptionKey, true);
+        return $iv . $hmac . $ciphertextRaw;
     }
 
-    public static function decrypt($encrypted_string)
+    /**
+     * Dencrypts a value
+     *
+     * @param string $pure_string
+     * @return string
+     */
+    public static function decrypt($encryptedString): string
     {
-        $encryption_key = env('APP_KEY');
-        if(!$encryption_key) throw new Exception("APP_KEY must be set.");
-        $cipher     = 'AES-256-CBC';
-        $options    = OPENSSL_RAW_DATA;
-        $hash_algo  = 'sha256';
-        $sha2len    = 32;
+        $encryptionKey = env('APP_KEY');
+        if (!$encryptionKey) throw new Exception("APP_KEY must be set.");
+        $cipher = 'AES-256-CBC';
+        $options = OPENSSL_RAW_DATA;
+        $hashAlgo = 'sha256';
+        $sha2len = 32;
         $ivlen = openssl_cipher_iv_length($cipher);
-        $iv = substr($encrypted_string, 0, $ivlen);
-        $hmac = substr($encrypted_string, $ivlen, $sha2len);
-        $ciphertext_raw = substr($encrypted_string, $ivlen + $sha2len);
-        $original_plaintext = openssl_decrypt($ciphertext_raw, $cipher, $encryption_key, $options, $iv);
-        $calcmac = hash_hmac($hash_algo, $ciphertext_raw, $encryption_key, true);
+        $iv = substr($encryptedString, 0, $ivlen);
+        $hmac = substr($encryptedString, $ivlen, $sha2len);
+        $ciphertextRaw = substr($encryptedString, $ivlen + $sha2len);
+        $originalPlaintext = openssl_decrypt($ciphertextRaw, $cipher, $encryptionKey, $options, $iv);
+        $calcmac = hash_hmac($hashAlgo, $ciphertextRaw, $encryptionKey, true);
         if (function_exists('hash_equals')) {
-            if (hash_equals($hmac, $calcmac)) return $original_plaintext;
+            if (hash_equals($hmac, $calcmac)) return $originalPlaintext;
         } else {
-            if (static::hash_equals_custom($hmac, $calcmac)) return $original_plaintext;
+            if (static::hash_equals_custom($hmac, $calcmac)) return $originalPlaintext;
         }
     }
 
-    private static function hash_equals_custom($knownString, $userString)
+    /**
+     * Intermediate function used in encryption proccess
+     *
+     * @param string $knownString
+     * @param string $userString
+     * @return bool
+     */
+    private static function hash_equals_custom($knownString, $userString): bool
     {
         if (function_exists('mb_strlen')) {
             $kLen = mb_strlen($knownString, '8bit');

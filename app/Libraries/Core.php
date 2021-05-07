@@ -3,17 +3,36 @@
 namespace App\Libraries;
 
 /*
-* App Core Class
 * Creates URL & loads core controller
 * URL FORMAT - /controller/method/params
 */
 
 class Core
 {
+  /**
+   * Current Controller
+   *
+   * @var mixed
+   */
   protected $currentController = 'Dashboard';
+
+  /**
+   * Method on the current controller
+   *
+   * @var string
+   */
   protected $currentMethod = 'index';
+
+  /**
+   * URL parameters
+   *
+   * @var array
+   */
   protected $params = [];
 
+  /**
+   * Core class constructor method
+   */
   public function __construct()
   {
     $url = $this->getUrl();
@@ -38,7 +57,12 @@ class Core
     call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
   }
 
-  public function getUrl()
+  /**
+   * Filter the current url
+   *
+   * @return mixed
+   */
+  public function getUrl(): mixed
   {
     if (isset($_GET['url'])) {
       $url = rtrim($_GET['url'], '/');

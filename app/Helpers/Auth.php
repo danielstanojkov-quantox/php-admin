@@ -18,6 +18,6 @@ class Auth
 
     protected static function getUser()
     {
-        return Storage::getUserById(Cookie::get('user_id'));
+        return UserStorage::getUserById(Cookie::get('user_id'));
     }
 }

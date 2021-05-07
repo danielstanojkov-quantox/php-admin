@@ -10,8 +10,12 @@ use App\Libraries\Database;
 
 class Dashboard extends Controller
 {
-
-  public function index()
+  /**
+   * Displays dashboard view to user
+   *
+   * @return void
+   */
+  public function index(): void
   {
     if (!IsAuthenticatedMiddleware::handle()) Redirect::To('/login');
 

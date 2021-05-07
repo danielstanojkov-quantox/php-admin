@@ -4,34 +4,72 @@ namespace App\Helpers;
 
 class File
 {
-    public static function get($filename)
+    /**
+     * Get contents of a file
+     *
+     * @param string $filename
+     * @return string
+     */
+    public static function get($filename): string
     {
         return file_get_contents($filename);
     }
 
-    public static function put($filename, $data)
+    /**
+     * Put contents in a file
+     *
+     * @param string $filename
+     * @param string $data
+     * @return bool
+     */
+    public static function put($filename, $data): bool
     {
         return file_put_contents($filename, $data);
     }
 
-    public static function exists($filename)
+    /**
+     * Check if file exists on server
+     *
+     * @param string $filename
+     * @return bool
+     */
+    public static function exists($filename): bool
     {
         return file_exists($filename);
     }
 
-    public static function makeDirectory($dirname)
+    /**
+     * Makes directory on server
+     *
+     * @param string $dirname
+     * @return void
+     */
+    public static function makeDirectory($dirname): void
     {
         mkdir(APPROOT . "/$dirname");
-    } 
+    }
 
-    public static function makeFile($directory, $filename, $content)
+    /**
+     * Makes file on server
+     *
+     * @param string $directory
+     * @param string $filename
+     * @param string $content
+     * @return void
+     */
+    public static function makeFile($directory, $filename, $content): void
     {
         $file = fopen(APPROOT . "/$directory/$filename", "w");
         fwrite($file, $content);
         fclose($file);
     }
 
-    public static function createStorageFolder()
+    /**
+     * Creates storage folder for users on server
+     *
+     * @return void
+     */
+    public static function createStorageFolder(): void
     {
         static::makeDirectory('storage');
         static::makeFile('storage', 'users.json', '');
