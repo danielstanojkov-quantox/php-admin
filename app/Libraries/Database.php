@@ -8,23 +8,37 @@ use App\Helpers\Session;
 use App\Helpers\Storage;
 use \Pdo;
 use \PDOException;
-
-/*
-* PDO Database Class
-* Connect to database
-* Create prepared statements
-* Bind values
-* Return rows and results
-*/
+use PDOStatement;
 
 class Database
 {
+  /**
+   * Database Connection
+   *
+   * @var Pdo
+   */
   public static $dbh;
+
+  /**
+   * PDO statement
+   *
+   * @var PDOStatement
+   */
   public static $stmt;
+
+  /**
+   * PDO Error
+   *
+   * @var PDOError
+   */
   public static $error;
 
-
-  public static function init()
+  /**
+   * Initialize database connection
+   *
+   * @return void
+   */
+  public static function init(): void
   {
     if (Cookie::exists('user_id')) {
       $user = Storage::getUserById(Cookie::get('user_id'));
@@ -32,16 +46,22 @@ class Database
     }
   }
 
-  public static function connect($host, $username, $password)
+  /**
+   * Establishes connection to database
+   *
+   * @param string $host
+   * @param string $username
+   * @param string $password
+   * @return void
+   */
+  public static function connect($host, $username, $password): void
   {
-    // Set DSN
     $dsn = "mysql:host=$host";
     $options = array(
       PDO::ATTR_PERSISTENT => true,
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     );
 
-    // Create PDO instance
     try {
       self::$dbh = new PDO($dsn, $username, $password, $options);
     } catch (PDOException $e) {
@@ -51,18 +71,30 @@ class Database
       Session::flash('host', $host);
       Session::flash('username', $username);
 
-      Redirect::To('/login');
+      Redirect::to('/login');
     }
   }
 
-  // Prepare statement with query
-  public function query($sql)
+  /**
+   * Prepare statement with query
+   *
+   * @param string $sql
+   * @return void
+   */
+  public function query($sql): void
   {
     $this->stmt = $this->dbh->prepare($sql);
   }
 
-  // Bind values
-  public function bind($param, $value, $type = null)
+  /**
+   * Bind values
+   *
+   * @param string $param
+   * @param string $value
+   * @param string $type
+   * @return void
+   */
+  public function bind($param, $value, $type = null): void
   {
     if (is_null($type)) {
       switch (true) {
@@ -83,28 +115,44 @@ class Database
     $this->stmt->bindValue($param, $value, $type);
   }
 
-  // Execute the prepared statement
-  public function execute()
+  /**
+   * Execute the prepared statement
+   *
+   * @return bool
+   */
+  public function execute(): bool
   {
     return $this->stmt->execute();
   }
 
-  // Get result set as array of objects
-  public function resultSet()
+  /**
+   * Get result set as array of objects
+   *
+   * @return bool
+   */
+  public function resultSet(): bool
   {
     $this->execute();
     return $this->stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
-  // Get single record as object
-  public function single()
+  /**
+   * Get single record as object
+   *
+   * @return bool
+   */
+  public function single(): bool
   {
     $this->execute();
     return $this->stmt->fetch(PDO::FETCH_OBJ);
   }
 
-  // Get row count
-  public function rowCount()
+  /**
+   * Get row count
+   *
+   * @return int
+   */
+  public function rowCount(): int
   {
     return $this->stmt->rowCount();
   }

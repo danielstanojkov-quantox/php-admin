@@ -4,23 +4,46 @@ namespace App\Helpers;
 
 class Session
 {
-    public static function start()
+    /**
+     * Starts a new session on the server
+     *
+     * @return void
+     */
+    public static function start(): void
     {
         session_start();
     }
 
-    public static function destroy()
+    /**
+     * Destroys existing session on the server
+     *
+     * @return void
+     */
+    public static function destroy(): void
     {
         session_destroy();
     }
 
-    public static function exists($name)
+    /**
+     * Checks if session exist for a specified key
+     *
+     * @param string $name
+     * @return void
+     */
+    public static function exists($name): void
     {
         session_exists($name);
     }
 
-    public static function flash($name = "", $message = "")
+    /**
+     * Creates a session for a single request
+     *
+     * @param string $name
+     * @param string $message
+     * @return void
+     */
+    public static function flash($name = "", $message = ""): void
     {
-      session($name, $message);
+        session($name, $message);
     }
 }

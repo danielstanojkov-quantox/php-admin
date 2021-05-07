@@ -5,21 +5,19 @@ namespace App\Http\Controllers;
 use App\Helpers\Redirect;
 use App\Http\Middleware\IsAuthenticatedMiddleware;
 use App\Libraries\Controller;
-use App\Libraries\Database;
 
 class Dashboard extends Controller
 {
-
-  public function index()
+  /**
+   * Displays dashboard view to user
+   *
+   * @return void
+   */
+  public function index(): void
   {
-    if (!IsAuthenticatedMiddleware::handle()) Redirect::To('/login');
+    if (!IsAuthenticatedMiddleware::handle()) Redirect::to('/login');
 
     $data = [];
     $this->view('dashboard/index', $data);
-  }
-
-  public function test()
-  {
-    var_dump(Database::$dbh);
   }
 }

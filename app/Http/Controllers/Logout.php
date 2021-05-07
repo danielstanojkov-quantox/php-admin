@@ -10,13 +10,18 @@ use App\Libraries\Controller;
 
 class Logout extends Controller
 {
-    public function index()
+    /**
+     * Logout the authenticated user
+     *
+     * @return void
+     */
+    public function index(): void
     {
-        if(IsAuthenticatedMiddleware::handle()){
+        if (IsAuthenticatedMiddleware::handle()) {
             Storage::removeUserById(Cookie::get('user_id'));
             Cookie::remove('user_id');
-        } 
+        }
 
-        Redirect::To('/login');
+        Redirect::to('/login');
     }
 }

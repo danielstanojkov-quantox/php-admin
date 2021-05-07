@@ -6,10 +6,16 @@ use Exception;
 
 class Hash
 {
-    public static function encrypt($pure_string)
+    /**
+     * Encrypts a value
+     *
+     * @param string $pure_string
+     * @return string
+     */
+    public static function encrypt($pure_string): string
     {
         $encryption_key = env('APP_KEY');
-        if(!$encryption_key) throw new Exception("APP_KEY must be set.");
+        if (!$encryption_key) throw new Exception("APP_KEY must be set.");
         $cipher     = 'AES-256-CBC';
         $options    = OPENSSL_RAW_DATA;
         $hash_algo  = 'sha256';
@@ -21,10 +27,16 @@ class Hash
         return $iv . $hmac . $ciphertext_raw;
     }
 
-    public static function decrypt($encrypted_string)
+    /**
+     * Dencrypts a value
+     *
+     * @param string $pure_string
+     * @return string
+     */
+    public static function decrypt($encrypted_string): string
     {
         $encryption_key = env('APP_KEY');
-        if(!$encryption_key) throw new Exception("APP_KEY must be set.");
+        if (!$encryption_key) throw new Exception("APP_KEY must be set.");
         $cipher     = 'AES-256-CBC';
         $options    = OPENSSL_RAW_DATA;
         $hash_algo  = 'sha256';
@@ -42,7 +54,14 @@ class Hash
         }
     }
 
-    private static function hash_equals_custom($knownString, $userString)
+    /**
+     * Intermediate function used in encryption proccess
+     *
+     * @param string $knownString
+     * @param string $userString
+     * @return bool
+     */
+    private static function hash_equals_custom($knownString, $userString): bool
     {
         if (function_exists('mb_strlen')) {
             $kLen = mb_strlen($knownString, '8bit');

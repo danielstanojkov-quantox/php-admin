@@ -3,7 +3,6 @@
 namespace App\Http\Middleware;
 
 use App\Helpers\Cookie;
-use App\Helpers\Redirect;
 
 class IsAuthenticatedMiddleware
 {
@@ -11,9 +10,9 @@ class IsAuthenticatedMiddleware
      * Allow access if the user is authenticated
      *
      * @param  $request
-     * @return string|null
+     * @return bool
      */
-    public static function handle()
+    public static function handle(): bool
     {
         return Cookie::exists('user_id');
     }

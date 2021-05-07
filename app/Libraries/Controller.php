@@ -2,20 +2,27 @@
 
 namespace App\Libraries;
 
-/*
-* Base Controller
-* Loads the models and views
-*/
-
 class Controller
 {
-  public function model($model)
+  /**
+   * Load models
+   *
+   * @param string $model
+   * @return object
+   */
+  public function model($model): object
   {
     return new $model();
   }
 
-  // Load view
-  public function view($view, $data = [])
+  /**
+   * Load Views
+   *
+   * @param string $view
+   * @param array $data
+   * @return void
+   */
+  public function view($view, $data = []): void
   {
     if (!file_exists('../resources/views/' . $view . '.php')) {
       die('View does not exist');

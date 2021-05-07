@@ -11,20 +11,30 @@ use App\Http\Middleware\IsAuthenticatedMiddleware;
 
 class Login extends Controller
 {
-    public function index()
+    /**
+     * Displays login view
+     *
+     * @return mixed
+     */
+    public function index(): mixed
     {
-        if (IsAuthenticatedMiddleware::handle()) Redirect::To('/dashboard');
+        if (IsAuthenticatedMiddleware::handle()) Redirect::to('/dashboard');
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $this->login();
-            return;
+            return null;
         }
-    
+
         $data = [];
-        $this->view('auth/login', $data);
+        return $this->view('auth/login', $data);
     }
 
-    public function login()
+    /**
+     * Authenticate user
+     *
+     * @return void
+     */
+    public function login(): void
     {
         $host = $_POST['host'];
         $username = $_POST['username'];
@@ -34,8 +44,8 @@ class Login extends Controller
 
         $user = new User($host, $username, $password);
         $user = $user->save();
-        
+
         Cookie::set('user_id', $user['id']);
-        Redirect::To('/dashboard');
+        Redirect::to('/dashboard');
     }
 }
