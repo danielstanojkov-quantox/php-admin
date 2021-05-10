@@ -17,13 +17,18 @@ class Dashboard extends Controller
    */
   public function index(): void
   {
-    if (!IsAuthenticatedMiddleware::handle()) Redirect::To('/login');
+    if (!IsAuthenticatedMiddleware::handle()) {
+      Redirect::to('/login');
+    }
+
+    $db = Database::getInstance();
+ 
 
     $data = [
       'host' => Auth::host(),
       'username' => Auth::username(),
-      'databases' => Database::all(),
-      'tables' => Database::getTables()
+      'databases' => $db->allDatabaseNames(),
+      'tables' => []
     ];
 
     $this->view('dashboard/index', $data);

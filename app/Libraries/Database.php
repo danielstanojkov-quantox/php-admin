@@ -3,8 +3,6 @@
 namespace App\Libraries;
 
 use App\Helpers\Cookie;
-use App\Helpers\Redirect;
-use App\Helpers\Session;
 use App\Helpers\UserStorage;
 use \Pdo;
 use \PDOException;
@@ -13,25 +11,17 @@ use PDOStatement;
 class Database
 {
   /**
-   * Selected database name
+   * Database Instance
    *
-   * @var string
    */
-  public static $database;
+  private static $instance = null;
 
-  /**
-   * Selected table name
-   *
-   * @var string
-   */
-
-  public static $table;
   /**
    * Database Connection
    *
    * @var Pdo
    */
-  public static $dbh;
+  public static $pdo;
 
   /**
    * PDO statement
@@ -48,45 +38,42 @@ class Database
   public static $error;
 
   /**
-   * Initialize database connection
+   * Database constructor
    *
-   * @return void
    */
-  public static function init(): void
+  private function __construct($credentials)
   {
     if (Cookie::exists('user_id')) {
       $user = UserStorage::getUserById(Cookie::get('user_id'));
-      static::connect($user->host, $user->username, $user->password);
+      unset($user->id);
+      $credentials = (array) $user;
     }
-  }
 
-  /**
-   * Establishes connection to database
-   *
-   * @param string $host
-   * @param string $username
-   * @param string $password
-   * @return void
-   */
-  public static function connect($host, $username, $password): void
-  {
-    $dsn = "mysql:host=$host";
+    $dsn = "mysql:host=" . $credentials['host'];
     $options = array(
       PDO::ATTR_PERSISTENT => true,
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     );
 
     try {
-      self::$dbh = new PDO($dsn, $username, $password, $options);
+     self::$pdo = new PDO($dsn, $credentials['username'], $credentials['password'], $options);
     } catch (PDOException $e) {
-      self::$error = $e->getMessage();
-
-      Session::flash('login_failed', self::$error);
-      Session::flash('host', $host);
-      Session::flash('username', $username);
-
-      Redirect::to('/login');
+      throw $e;
     }
+  }
+
+  /**
+   * Get connection instance
+   *
+   * @return object
+   */
+  public static function getInstance($credentials = null): object
+  {
+    if (self::$instance == null) {
+        self::$instance = new Database($credentials);
+    }
+
+    return self::$instance;
   }
 
   /**
@@ -94,126 +81,108 @@ class Database
    *
    * @return array
    */
-  public static function all(): array
+  public function allDatabaseNames(): array
   {
-    $stmt = self::$dbh->query('SHOW DATABASES;');
+    $stmt = self::$pdo->query('SHOW DATABASES;');
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
-  /**
-   * Retrieve and format database tables
-   *
-   * @return void
-   */
-  public static function getTables()
-  {
-    if (!isset($_GET['db_name'])) return null;
-    $tables = static::tables($_GET['db_name']);
 
-    $tables = array_map(function ($table) {
-      $table = array_values($table);
-      return array_pop($table);
-    }, $tables);
 
-    return $tables;
-  }
 
-  /**
-   * Retrieves all tables for certain database
-   *
-   * @param string $database
-   * @return mixed
-   */
-  public static function tables($database): mixed
-  {
-    try {
-      $stmt = self::$dbh->query("SHOW TABLES FROM $database;");
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (\Throwable $th) {
-      session('db_not_found', "Database doesn't exist");
-      Redirect::To('/dashboard');
-    }
-  }
 
-  /**
-   * Prepare statement with query
-   *
-   * @param string $sql
-   * @return void
-   */
-  public function query($sql): void
-  {
-    $this->stmt = $this->dbh->prepare($sql);
-  }
 
-  /**
-   * Bind values
-   *
-   * @param string $param
-   * @param string $value
-   * @param string $type
-   * @return void
-   */
-  public function bind($param, $value, $type = null): void
-  {
-    if (is_null($type)) {
-      switch (true) {
-        case is_int($value):
-          $type = PDO::PARAM_INT;
-          break;
-        case is_bool($value):
-          $type = PDO::PARAM_BOOL;
-          break;
-        case is_null($value):
-          $type = PDO::PARAM_NULL;
-          break;
-        default:
-          $type = PDO::PARAM_STR;
-      }
-    }
 
-    $this->stmt->bindValue($param, $value, $type);
-  }
 
-  /**
-   * Execute the prepared statement
-   *
-   * @return bool
-   */
-  public function execute(): bool
-  {
-    return $this->stmt->execute();
-  }
 
-  /**
-   * Get result set as array of objects
-   *
-   * @return bool
-   */
-  public function resultSet(): bool
-  {
-    $this->execute();
-    return $this->stmt->fetchAll(PDO::FETCH_OBJ);
-  }
 
-  /**
-   * Get single record as object
-   *
-   * @return bool
-   */
-  public function single(): bool
-  {
-    $this->execute();
-    return $this->stmt->fetch(PDO::FETCH_OBJ);
-  }
 
-  /**
-   * Get row count
-   *
-   * @return int
-   */
-  public function rowCount(): int
-  {
-    return $this->stmt->rowCount();
-  }
+
+
+
+
+
+
+  // /**
+  //  * Prepare statement with query
+  //  *
+  //  * @param string $sql
+  //  * @return void
+  //  */
+  // public function query($sql): void
+  // {
+  //   var_dump(static::$instance);
+  //   die;
+  //   // static::$stmt = self::$instance->prepare($sql);
+  // }
+  // /**
+  //  * Bind values
+  //  *
+  //  * @param string $param
+  //  * @param string $value
+  //  * @param string $type
+  //  * @return void
+  //  */
+  // public function bind($param, $value, $type = null): void
+  // {
+  //   if (is_null($type)) {
+  //     switch (true) {
+  //       case is_int($value):
+  //         $type = PDO::PARAM_INT;
+  //         break;
+  //       case is_bool($value):
+  //         $type = PDO::PARAM_BOOL;
+  //         break;
+  //       case is_null($value):
+  //         $type = PDO::PARAM_NULL;
+  //         break;
+  //       default:
+  //         $type = PDO::PARAM_STR;
+  //     }
+  //   }
+
+  //   $this->stmt->bindValue($param, $value, $type);
+  // }
+
+  // /**
+  //  * Execute the prepared statement
+  //  *
+  //  * @return bool
+  //  */
+  // public function execute(): bool
+  // {
+  //   return $this->stmt->execute();
+  // }
+
+  // /**
+  //  * Get result set as array of objects
+  //  *
+  //  * @return bool
+  //  */
+  // public function resultSet(): bool
+  // {
+  //   $this->execute();
+  //   return $this->stmt->fetchAll(PDO::FETCH_OBJ);
+  // }
+
+  // /**
+  //  * Get single record as object
+  //  *
+  //  * @return bool
+  //  */
+  // public function single(): bool
+  // {
+  //   $this->execute();
+  //   return $this->stmt->fetch(PDO::FETCH_OBJ);
+  // }
+
+  // /**
+  //  * Get row count
+  //  *
+  //  * @return int
+  //  */
+  // public function rowCount(): int
+  // {
+  //   return $this->stmt->rowCount();
+  // }
 }
