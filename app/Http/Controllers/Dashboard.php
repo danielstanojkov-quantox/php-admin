@@ -23,23 +23,9 @@ class Dashboard extends Controller
       'host' => Auth::host(),
       'username' => Auth::username(),
       'databases' => Database::all(),
-      'tables' => $this->getTables()
+      'tables' => Database::getTables()
     ];
 
     $this->view('dashboard/index', $data);
-  }
-
-
-  protected function getTables()
-  {
-    if (!isset($_GET['db_name'])) return null;
-    $tables = Database::tables($_GET['db_name']);
-
-    $tables = array_map(function($table){
-      $table = array_values($table);
-      return array_pop($table);
-    }, $tables);
-
-    return $tables;
   }
 }

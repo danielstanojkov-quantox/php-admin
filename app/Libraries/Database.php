@@ -24,7 +24,7 @@ class Database
    *
    * @var string
    */
-  
+
   public static $table;
   /**
    * Database Connection
@@ -89,14 +89,42 @@ class Database
     }
   }
 
-
-  public static function all()
+  /**
+   * Retrieves all database names from server
+   *
+   * @return array
+   */
+  public static function all(): array
   {
     $stmt = self::$dbh->query('SHOW DATABASES;');
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
-  public static function tables($database)
+  /**
+   * Retrieve and format database tables
+   *
+   * @return void
+   */
+  public static function getTables()
+  {
+    if (!isset($_GET['db_name'])) return null;
+    $tables = static::tables($_GET['db_name']);
+
+    $tables = array_map(function ($table) {
+      $table = array_values($table);
+      return array_pop($table);
+    }, $tables);
+
+    return $tables;
+  }
+
+  /**
+   * Retrieves all tables for certain database
+   *
+   * @param string $database
+   * @return mixed
+   */
+  public static function tables($database): mixed
   {
     try {
       $stmt = self::$dbh->query("SHOW TABLES FROM $database;");
@@ -106,7 +134,6 @@ class Database
       Redirect::To('/dashboard');
     }
   }
-
 
   /**
    * Prepare statement with query
