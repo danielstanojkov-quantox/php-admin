@@ -55,3 +55,15 @@ function env($key): mixed
 
     return $string;
 }
+
+/**
+ * Get full url
+ *
+ * @return string
+ */
+function fullUrl()
+{
+    $domain = $_SERVER['HTTP_HOST'];
+
+    return "http://" . $domain . $_SERVER['REQUEST_URI'];
+}

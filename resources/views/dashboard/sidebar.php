@@ -25,7 +25,7 @@
     <div class="mb-4">
         <p class="lead mb-1">Select Database</p>
 
-        <form action="" method="get" class="input-group">
+        <form method="get" class="input-group">
             <select name="db_name" class="custom-select">
                 <option disabled selected>Choose database</option>
                 <?php foreach ($data['databases'] as $database) : ?>
@@ -54,7 +54,7 @@
             <?php foreach ($data['tables'] as $table) : ?>
                 <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-table text-primary"></i>
-                    <a href="">
+                    <a href="http://localhost/php_admin/dashboard?db_name=<?= $_GET['db_name'] ?>&table=<?=$table?>">
                         <h6 class="d-flex align-items-center ml-2 mb-0">
                             <?= $table; ?>
                         </h6>
@@ -62,7 +62,6 @@
                 </div>
             <?php endforeach; ?>
         </div>
-
     <?php endif; ?>
 
 </div>

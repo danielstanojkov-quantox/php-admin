@@ -23,4 +23,14 @@ class Server
     {
         return $_SERVER;
     }
+
+    /**
+     * Get full url
+     *
+     * @return string
+     */
+    public static function fullUrl(): string
+    {
+        return fullUrl();
+    }
 }

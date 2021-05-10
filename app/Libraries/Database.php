@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use App\Helpers\Cookie;
+use App\Helpers\Request;
 use App\Helpers\UserStorage;
 use \Pdo;
 use \PDOException;
@@ -56,7 +57,7 @@ class Database
     );
 
     try {
-     self::$pdo = new PDO($dsn, $credentials['username'], $credentials['password'], $options);
+      self::$pdo = new PDO($dsn, $credentials['username'], $credentials['password'], $options);
     } catch (PDOException $e) {
       throw $e;
     }
@@ -70,7 +71,7 @@ class Database
   public static function getInstance($credentials = null): object
   {
     if (self::$instance == null) {
-        self::$instance = new Database($credentials);
+      self::$instance = new Database($credentials);
     }
 
     return self::$instance;
@@ -88,17 +89,33 @@ class Database
   }
 
 
+  /**
+   * Retrieves all table names for specified database
+   *
+   * @return array
+   */
+  public function getTables($databaseName): array
+  {
+    try {
+      $stmt = self::$pdo->query("SHOW TABLES FROM $databaseName;");
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+  }
 
+  /**
+   * Retrieves table data
+   *
+   */
+  public function fetchTableContents($database, $tableName)
+  {
+    $stmt = self::$pdo->query("USE $database;");
+    $stmt->execute();
+    $stmt = self::$pdo->query("SELECT * FROM $tableName;");
 
-
-
-
-
-
-
-
-
-
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
 
 
 

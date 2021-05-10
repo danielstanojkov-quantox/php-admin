@@ -27,9 +27,9 @@ class Request
     /**
      * Get data from the request
      *
-     * @return array
+     * @return mixed
      */
-    public static function all(): array
+    public static function all(): mixed
     {
         switch (Server::method()) {
             case 'POST':
