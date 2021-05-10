@@ -5,13 +5,22 @@ namespace App\Helpers;
 class Server
 {
     /**
-     *  Check method type of the request 
+     * Return the current request's type
      *
-     * @param string $method
-     * @return bool
+     * @return string
      */
-    public static function requestIs($method): bool
+    public static function method(): string
     {
-        return $_SERVER['REQUEST_METHOD'] === strtoupper($method);
+        return $_SERVER['REQUEST_METHOD'];
+    }
+
+    /**
+     * Return's request object
+     *
+     * @return array
+     */
+    public static function getRequest(): array
+    {
+        return $_SERVER;
     }
 }

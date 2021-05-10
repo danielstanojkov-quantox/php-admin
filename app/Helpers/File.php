@@ -57,21 +57,10 @@ class File
      * @param string $content
      * @return void
      */
-    public static function makeFile($directory, $filename, $content): void
+    public static function makeFile($filename, $content): void
     {
-        $file = fopen(APPROOT . "/$directory/$filename", "w");
+        $file = fopen(APPROOT . "/$filename", "w");
         fwrite($file, $content);
         fclose($file);
-    }
-
-    /**
-     * Creates storage folder for users on server
-     *
-     * @return void
-     */
-    public static function createStorageFolder(): void
-    {
-        static::makeDirectory('storage');
-        static::makeFile('storage', 'users.json', '');
     }
 }

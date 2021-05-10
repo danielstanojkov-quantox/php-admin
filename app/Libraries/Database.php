@@ -3,8 +3,6 @@
 namespace App\Libraries;
 
 use App\Helpers\Cookie;
-use App\Helpers\Redirect;
-use App\Helpers\Session;
 use App\Helpers\UserStorage;
 use \Pdo;
 use \PDOException;
@@ -17,7 +15,7 @@ class Database
    *
    * @var Pdo
    */
-  public static $dbh;
+  private static $instance = null;
 
   /**
    * PDO statement
@@ -33,46 +31,44 @@ class Database
    */
   public static $error;
 
-  /**
-   * Initialize database connection
-   *
-   * @return void
-   */
-  public static function init(): void
-  {
-    if (Cookie::exists('user_id')) {
-      $user = UserStorage::getUserById(Cookie::get('user_id'));
-      static::connect($user->host, $user->username, $user->password);
-    }
-  }
 
   /**
-   * Establishes connection to database
+   * Database constructor
    *
-   * @param string $host
-   * @param string $username
-   * @param string $password
-   * @return void
    */
-  public static function connect($host, $username, $password): void
+  private function __construct($credentials)
   {
-    $dsn = "mysql:host=$host";
+    if(Cookie::exists('user_id')){
+      $user = UserStorage::getUserById(Cookie::get('user_id'));
+      unset($user->id);
+      $credentials = (array) $user;
+    }
+
+    $dsn = "mysql:host=" . $credentials['host'];
     $options = array(
       PDO::ATTR_PERSISTENT => true,
       PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     );
 
     try {
-      self::$dbh = new PDO($dsn, $username, $password, $options);
+      return new PDO($dsn, $credentials['username'], $credentials['password'], $options);
     } catch (PDOException $e) {
-      self::$error = $e->getMessage();
-
-      Session::flash('login_failed', self::$error);
-      Session::flash('host', $host);
-      Session::flash('username', $username);
-
-      Redirect::to('/login');
+      throw $e;
     }
+  }
+
+  /**
+   * Get connection instance
+   *
+   * @return object
+   */
+  public static function getInstance($credentials = null): object
+  {
+    if (self::$instance == null) {
+      self::$instance = new Database($credentials);
+    }
+
+    return self::$instance;
   }
 
   /**

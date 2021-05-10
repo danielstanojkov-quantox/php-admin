@@ -30,9 +30,9 @@ class Hash
      * Dencrypts a value
      *
      * @param string $pure_string
-     * @return string
+     * @return mixed
      */
-    public static function decrypt($encryptedString): string
+    public static function decrypt($encryptedString): mixed
     {
         $encryptionKey = env('APP_KEY');
         if (!$encryptionKey) throw new Exception("APP_KEY must be set.");
@@ -47,10 +47,16 @@ class Hash
         $originalPlaintext = openssl_decrypt($ciphertextRaw, $cipher, $encryptionKey, $options, $iv);
         $calcmac = hash_hmac($hashAlgo, $ciphertextRaw, $encryptionKey, true);
         if (function_exists('hash_equals')) {
-            if (hash_equals($hmac, $calcmac)) return $originalPlaintext;
+            if (hash_equals($hmac, $calcmac)) {
+                return $originalPlaintext;
+            }
         } else {
-            if (static::hash_equals_custom($hmac, $calcmac)) return $originalPlaintext;
+            if (static::hash_equals_custom($hmac, $calcmac)) {
+                return $originalPlaintext;
+            }
         }
+
+        return null;
     }
 
     /**

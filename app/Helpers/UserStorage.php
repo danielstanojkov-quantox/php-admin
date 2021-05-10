@@ -12,6 +12,17 @@ class UserStorage
     public static $path = USERS;
 
     /**
+     * Creates storage folder for users on server
+     *
+     * @return void
+     */
+    public static function makeStorageFolder(): void
+    {
+        File::makeDirectory('storage');
+        File::makeFile('storage/users.json', '');
+    }
+
+    /**
      * Adds an user to users.json file
      *
      * @param array $user
@@ -19,7 +30,9 @@ class UserStorage
      */
     public static function add(array $user): void
     {
-        if (!File::exists(static::$path)) File::createStorageFolder();
+        if (!File::exists(static::$path)) {
+            static::makeStorageFolder();
+        }
 
         $users = static::getUsers() ?? [];
         array_push($users, $user);
@@ -64,9 +77,9 @@ class UserStorage
     /**
      * Retrieve all users from user.json
      *
-     * @return array
+     * @return mixed
      */
-    public static function getUsers(): array
+    public static function getUsers(): mixed
     {
         return json_decode(
             Hash::decrypt(File::get(static::$path))

@@ -64,11 +64,13 @@ class Core
    */
   public function getUrl(): mixed
   {
-    if (isset($_GET['url'])) {
-      $url = rtrim($_GET['url'], '/');
-      $url = filter_var($url, FILTER_SANITIZE_URL);
-      $url = explode('/', $url);
-      return $url;
+    if (!isset($_GET['url'])) {
+      return null;
     }
+
+    $url = rtrim($_GET['url'], '/');
+    $url = filter_var($url, FILTER_SANITIZE_URL);
+    $url = explode('/', $url);
+    return $url;
   }
 }
