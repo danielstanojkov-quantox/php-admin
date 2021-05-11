@@ -44,11 +44,13 @@ class Database
    */
   private function __construct($credentials)
   {
-
+    
+   
     if (Cookie::exists('user_id')) {
       $user = UserStorage::getUserById(Cookie::get('user_id'));
       $credentials = (array) $user;
     }
+
     
     $dsn = "mysql:host=" . $credentials['host'];
     $options = array(
@@ -68,7 +70,7 @@ class Database
    *
    * @return array
    */
-  public static function getInstance(array $credentials = null): object
+  public static function getInstance(array $credentials = []): object
   {
     if (self::$instance == null) {
       self::$instance = new Database($credentials);
