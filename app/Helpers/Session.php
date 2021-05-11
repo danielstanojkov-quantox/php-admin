@@ -30,9 +30,9 @@ class Session
      * @param string $name
      * @return void
      */
-    public static function exists($name): void
+    public static function exists(string $name): void
     {
-        session_exists($name);
+        sessionExists($name);
     }
 
     /**
@@ -42,7 +42,7 @@ class Session
      * @param string $message
      * @return void
      */
-    public static function flash($name = "", $message = ""): void
+    public static function flash(string $name = "", string $message = ""): void
     {
         session($name, $message);
     }

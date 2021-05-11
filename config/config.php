@@ -7,7 +7,7 @@ define('APPROOT', dirname(dirname(__FILE__)));
 define('URLROOT', 'http://localhost/php_admin');
 
 // Site Name
-define('SITENAME', 'Php Admin');
+define('SITENAME', 'phpAdmin');
 
 // Users file
 define('USERS', dirname(dirname(__FILE__)) . "/storage/users.json");

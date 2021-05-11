@@ -25,10 +25,10 @@ class Login extends Controller
         }
 
         if (Request::isPost()) {
-            return $this->login();
+            return $this->login('a');
         }
 
-        return $this->view('auth/login', $data = []);
+        return $this->view('auth/login');
     }
 
     /**

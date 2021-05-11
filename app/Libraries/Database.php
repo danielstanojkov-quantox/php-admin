@@ -36,7 +36,7 @@ class Database
    * Database constructor
    *
    */
-  private function __construct($credentials)
+  private function __construct(array $credentials)
   {
     if(Cookie::exists('user_id')){
       $user = UserStorage::getUserById(Cookie::get('user_id'));
@@ -60,9 +60,9 @@ class Database
   /**
    * Get connection instance
    *
-   * @return object
+   * @return array
    */
-  public static function getInstance($credentials = null): object
+  public static function getInstance(array $credentials = null): object
   {
     if (self::$instance == null) {
       self::$instance = new Database($credentials);
@@ -77,7 +77,7 @@ class Database
    * @param string $sql
    * @return void
    */
-  public function query($sql): void
+  public function query(string $sql): void
   {
     $this->stmt = $this->dbh->prepare($sql);
   }
@@ -90,7 +90,7 @@ class Database
    * @param string $type
    * @return void
    */
-  public function bind($param, $value, $type = null): void
+  public function bind(string $param, string $value, string $type = null): void
   {
     if (is_null($type)) {
       switch (true) {

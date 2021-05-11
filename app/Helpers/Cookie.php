@@ -12,7 +12,7 @@ class Cookie
      * @param string $name
      * @return string
      */
-    public static function get($name): string
+    public static function get(string $name): string
     {
         return Hash::decrypt($_COOKIE[$name]);
     }
@@ -30,13 +30,13 @@ class Cookie
      * @return void
      */
     public static function set(
-        $name,
-        $value = '',
-        $expires = null,
-        $path = '/',
-        $domain = '',
-        $secure = false,
-        $httponly = false
+        string $name,
+        string $value = '',
+        int $expires = null,
+        string $path = '/',
+        string $domain = '',
+        bool $secure = false,
+        bool $httponly = false
     ): void {
         $expires = Carbon::now()->timestamp + (EXPIRATION_TIME * 60);
         $value = Hash::encrypt($value);
@@ -49,7 +49,7 @@ class Cookie
      * @param string $name
      * @return bool
      */
-    public static function exists($name): bool
+    public static function exists(string $name): bool
     {
         return isset($_COOKIE[$name]);
     }
@@ -60,7 +60,7 @@ class Cookie
      * @param string $name
      * @return bool
      */
-    public static function remove($name): bool
+    public static function remove(string $name): bool
     {
         return setcookie($name, '', time() - 3600, '/');
     }

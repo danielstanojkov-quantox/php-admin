@@ -7,7 +7,7 @@
  * @param string $message
  * @return mixed
  */
-function session($name = "", $message = ""): mixed
+function session(string $name = "", string $message = ""): mixed
 {
     if (!empty($name) && !empty($message)) {
         $_SESSION[$name] = $message;
@@ -25,7 +25,7 @@ function session($name = "", $message = ""): mixed
  * @param string $key
  * @return bool
  */
-function session_exists($key): bool
+function sessionExists(string $key): bool
 {
     return isset($_SESSION[$key]);
 }
@@ -36,7 +36,7 @@ function session_exists($key): bool
  * @param  string  $key
  * @return mixed
  */
-function env($key): mixed
+function env(string $key): mixed
 {
     $data = file_get_contents(ENV);
 

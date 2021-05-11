@@ -1,21 +1,21 @@
 {
-    "name": "daniel/php_admin",
-    "authors": [
-        {
-            "name": "Daniel Stanojkov",
-            "email": "daniel.stanojkov@quantox.com"
-        }
-    ],
-    "require": {
-        "nesbot/carbon": "^2.47"
-    },
-    "autoload": {
-        "psr-4": {
-            "App\\": "app/"
-        },
-        "files": [
-            "config/config.php",
-            "app/Helpers/functions.php"
-        ]
+  "name": "daniel/php_admin",
+  "authors": [
+    {
+      "name": "Daniel Stanojkov",
+      "email": "daniel.stanojkov@quantox.com"
     }
+  ],
+  "require": {
+    "nesbot/carbon": "^2.47"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    },
+    "files": [
+      "config/config.php",
+      "app/Helpers/functions.php"
+    ]
+  }
 }

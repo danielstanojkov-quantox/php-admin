@@ -20,6 +20,6 @@ class Dashboard extends Controller
       Redirect::to('/login');
     }
     
-    $this->view('dashboard/index', $data = []);
+    $this->view('dashboard/index');
   }
 }
