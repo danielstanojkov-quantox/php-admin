@@ -44,12 +44,12 @@ class Database
    */
   private function __construct($credentials)
   {
+
     if (Cookie::exists('user_id')) {
       $user = UserStorage::getUserById(Cookie::get('user_id'));
-      unset($user->id);
       $credentials = (array) $user;
     }
-
+    
     $dsn = "mysql:host=" . $credentials['host'];
     $options = array(
       PDO::ATTR_PERSISTENT => true,
@@ -66,9 +66,9 @@ class Database
   /**
    * Get connection instance
    *
-   * @return object
+   * @return array
    */
-  public static function getInstance($credentials = null): object
+  public static function getInstance(array $credentials = null): object
   {
     if (self::$instance == null) {
       self::$instance = new Database($credentials);

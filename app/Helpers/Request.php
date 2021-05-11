@@ -48,7 +48,7 @@ class Request
      * @param string $field
      * @return mixed
      */
-    public static function input($field): mixed
+    public static function input(string $field): mixed
     {
         return static::all()[$field] ?? null;
     }

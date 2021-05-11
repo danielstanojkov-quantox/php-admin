@@ -16,7 +16,7 @@ class UserStorage
      *
      * @return void
      */
-    public static function makeStorageFolder(): void
+    public static function makeStorageFolder(): void    
     {
         File::makeDirectory('storage');
         File::makeFile('storage/users.json', '');
@@ -46,12 +46,12 @@ class UserStorage
      * @param string $id
      * @return void
      */
-    public static function removeUserById($id): void
+    public static function removeUserById(string $id): void
     {
         $users = static::getUsers();
 
         $users = array_filter($users, function ($user) use ($id) {
-            return $user->id != $id;
+            return $user->id !== $id;
         });
 
         static::setUsers($users);
@@ -63,12 +63,12 @@ class UserStorage
      * @param string $id
      * @return mixed
      */
-    public static function getUserById($id): mixed
+    public static function getUserById(string $id): mixed
     {
         $users = static::getUsers();
 
         $users = array_filter($users, function ($user) use ($id) {
-            return $user->id = $id;
+            return $user->id === (int) $id;
         });
 
         return $users[0] ?? null;

@@ -18,7 +18,7 @@
     </div>
 
     <!-- Select Form -->
-    <?php if (session_exists('db_not_found')) : ?>
+    <?php if (sessionExists('db_not_found')) : ?>
         <div class="alert alert-danger text-danger"><?= session('db_not_found') ?></div>
     <?php endif; ?>
 

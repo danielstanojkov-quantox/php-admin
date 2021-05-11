@@ -32,11 +32,9 @@ class User extends Controller
     /**
      * User Constructor
      *
-     * @param string $host
-     * @param string $username
-     * @param string $password
+     * @param array $credentials
      */
-    public function __construct($credentials)
+    public function __construct(array $credentials)
     {
         $this->host = $credentials['host'];
         $this->username = $credentials['username'];

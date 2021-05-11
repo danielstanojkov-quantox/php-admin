@@ -5,24 +5,13 @@ namespace App\Libraries;
 class Controller
 {
   /**
-   * Load models
-   *
-   * @param string $model
-   * @return object
-   */
-  public function model($model): object
-  {
-    return new $model();
-  }
-
-  /**
    * Load Views
    *
    * @param string $view
    * @param array $data
    * @return void
    */
-  public function view($view, $data = []): void
+  public function view(string $view, array $data = []): void
   {
     if (!file_exists('../resources/views/' . $view . '.php')) {
       die('View does not exist');

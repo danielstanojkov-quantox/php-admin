@@ -9,18 +9,18 @@
                 <div class="card-body">
                     <h5 class="card-title text-center">Sign In</h5>
 
-                    <?php if (session_exists('login_failed')) : ?>
+                    <?php if (sessionExists('login_failed')) : ?>
                         <div class="alert alert-danger text-dark"><?= session('login_failed') ?></div>
                     <?php endif; ?>
                     
                     <form class="form-signin" method="POST" action="<?= URLROOT . '/login'  ?>">
                         <div class="form-label-group">
-                            <input value="<?= session_exists('host') ? session('host') : '' ?>" name="host" type="text" id="inputUserame" class="form-control" placeholder="Host" autofocus>
+                            <input value="<?= sessionExists('host') ? session('host') : '' ?>" name="host" type="text" id="inputUserame" class="form-control" placeholder="Host" autofocus>
                             <label for="inputUserame">Host</label>
                         </div>
 
                         <div class="form-label-group">
-                            <input value="<?= session_exists('username') ? session('username') : '' ?>" name="username" type="text" id="inputEmail" class="form-control" placeholder="Username">
+                            <input value="<?= sessionExists('username') ? session('username') : '' ?>" name="username" type="text" id="inputEmail" class="form-control" placeholder="Username">
                             <label for="inputEmail">Username</label>
                         </div>
 

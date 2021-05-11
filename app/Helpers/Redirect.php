@@ -10,7 +10,7 @@ class Redirect
      * @param string $uri
      * @return void
      */
-    public static function to($uri): void
+    public static function to(string $uri): void
     {
         $uri = URLROOT . $uri;
         header("Location: $uri");
