@@ -1,7 +1,7 @@
-<?php require app('app_root') . '/resources/views/inc/header.php'; ?>
+<?php require app('app_root') . '/resources/views/includes/header.php'; ?>
 
 <div class="d-flex">
-    <?php require_once app('app_root') . "/resources/views/inc/sidebar.php" ?>
+    <?php require_once app('app_root') . "/resources/views/includes/sidebar.php" ?>
 
 
     <div class="w-75 bg-white" style="height: 100vh; overflow-y:scroll">
@@ -10,18 +10,9 @@
             <i class="fas fa-server"></i> Server: <?= $data['host'] ?>
         </div>
 
-        <ul class="nav nav-tabs my-3 mx-3">
-            <li class="nav-item mr-3">
-                <a class="nav-link bg-dark text-light" href="<?= app('url_root') ?>/dashboard"><i class="fas fa-table"></i> Browse</a>
-            </li>
-            <li class="nav-item mr-3">
-                <a class="nav-link bg-dark text-light" href="#"><i class="fas fa-sticky-note"></i> SQL</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link bg-dark text-light" href="#"><i class="fas fa-file-import"></i> Import</a>
-            </li>
-        </ul>
+        <?php require_once app('app_root') . "/resources/views/includes/nav.php" ?>
 
+        
         <div class="px-3">
             <?php if (isset($_GET['table'])) : ?>
                 <?php if (count($data['table_contents']) === 0) : ?>
@@ -59,9 +50,9 @@
 <script defer>
     $(document).ready(function() {
         $('#myTable').DataTable({
-            paging: false
+            paging: false,
         });
     });
 </script>
 
-<?php require app('app_root') . '/resources/views/inc/footer.php'; ?>
+<?php require app('app_root') . '/resources/views/includes/footer.php'; ?>

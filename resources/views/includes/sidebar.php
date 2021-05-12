@@ -18,8 +18,8 @@
     </div>
 
     <!-- Select Form -->
-    <?php if (sessionExists('db_not_found')) : ?>
-        <div class="alert alert-danger text-danger"><?= session('db_not_found') ?></div>
+    <?php if (sessionExists('db_err')) : ?>
+        <div class="alert alert-danger text-danger"><?= session('db_err') ?></div>
     <?php endif; ?>
 
     <div class="mb-4">

@@ -22,22 +22,59 @@ class Dashboard extends Controller
       Redirect::to('/login');
     }
 
+    $data = $this->getSidebarData();
+    $data['table_contents'] = $this->getTableContent();
+
+    $this->view('dashboard/main', $data);
+  }
+
+  /**
+   * Fetches all data related to the sidebar
+   *
+   * @return array
+   */
+  protected function getSidebarData(): array
+  {
     $db = Database::getInstance();
+
+    try {
+      $tables = $db->getTables();
+    } catch (\Throwable $th) {
+      session('db_err', $th->getMessage());
+      Redirect::To('/dashboard');
+    }
 
     $data =  [
       'host' => Auth::host(),
       'username' => Auth::username(),
       'databases' => $db->allDatabaseNames(),
-      'tables' => $db->getTables()
+      'tables' => $tables
     ];
 
-    if (Request::has('table')) {
-      $data['table_contents'] = $db->fetchTableContents(
+    return $data;
+  }
+
+  /**
+   * Fetches content for a specific table
+   *
+   * @return mixed
+   */
+  protected function getTableContent(): mixed
+  {
+    $db = Database::getInstance();
+
+    if (!Request::has('table')) {
+      return null;
+    }
+
+    try {
+      return  $db->fetchTableContents(
         Request::input('db_name'),
         Request::input('table')
       );
+    } catch (\Throwable $th) {
+      session('db_err', $th->getMessage());
+      Redirect::To('/dashboard');
     }
-
-    $this->view('dashboard/main', $data);
   }
 }

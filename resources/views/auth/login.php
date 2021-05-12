@@ -1,4 +1,4 @@
-<?php require app('app_root') . '/resources/views/inc/header.php'; ?>
+<?php require app('app_root') . '/resources/views/includes/header.php'; ?>
 
 <div class="container d-flex align-items-center justify-content-center mt-5">
     <div class="row w-100">
@@ -37,4 +37,4 @@
     </div>
 </div>
 
-<?php require app('app_root') . '/resources/views/inc/footer.php'; ?>
+<?php require app('app_root') . '/resources/views/includes/footer.php'; ?>

@@ -3,7 +3,6 @@
 namespace App\Libraries;
 
 use App\Helpers\Cookie;
-use App\Helpers\Redirect;
 use App\Helpers\Request;
 use App\Helpers\UserStorage;
 use \Pdo;
@@ -45,13 +44,10 @@ class Database
    */
   private function __construct($credentials)
   {
-
-
     if (Cookie::exists('user_id')) {
       $user = UserStorage::getUserById(Cookie::get('user_id'));
       $credentials = (array) $user;
     }
-
 
     $dsn = "mysql:host=" . $credentials['host'];
     $options = array(
@@ -91,7 +87,6 @@ class Database
     return $stmt->fetchAll(PDO::FETCH_OBJ);
   }
 
-
   /**
    * Retrieves all table names for specified database
    *
@@ -107,7 +102,6 @@ class Database
     }
   }
 
-
   /**
    * Get tables for specified database
    *
@@ -117,24 +111,22 @@ class Database
   {
     $db = Database::getInstance();
 
-    $tables = [];
-    if (Request::input('db_name')) {
-      try {
-        $tables = $db->getTablesFromServer(Request::input('db_name'));
-      } catch (\Throwable $th) {
-        session('db_not_found', "Database doesn't exist");
-        Redirect::To('/dashboard');
-      }
-    } else {
+    if (!Request::input('db_name')) {
       return null;
     }
 
-    $tables = array_map(function ($table) {
-      $table = array_values($table);
-      return array_pop($table);
-    }, $tables);
+    try {
+      $tables = $db->getTablesFromServer(Request::input('db_name'));
 
-    return $tables;
+      $tables = array_map(function ($table) {
+        $table = array_values($table);
+        return array_pop($table);
+      }, $tables);
+
+      return $tables;
+    } catch (\Throwable $th) {
+      throw $th;
+    }
   }
 
   /**
@@ -148,12 +140,10 @@ class Database
 
     try {
       $stmt = self::$pdo->query("SELECT * FROM $tableName;");
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (\Throwable $th) {
-      session('db_not_found', "Table doesn't exist");
-      Redirect::To('/dashboard');
+      throw $th;
     }
-
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }
 
 
