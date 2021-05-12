@@ -52,4 +52,14 @@ class Request
     {
         return static::all()[$field] ?? null;
     }
+
+    /**
+     *  Check if the request has ceratin parameter
+     *
+     * @return bool
+     */
+    public static function has($parameter): bool
+    {
+        return key_exists($parameter, static::all() ?? []);
+    }
 }

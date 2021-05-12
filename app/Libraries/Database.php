@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use App\Helpers\Cookie;
+use App\Helpers\Redirect;
 use App\Helpers\Request;
 use App\Helpers\UserStorage;
 use \Pdo;
@@ -96,7 +97,7 @@ class Database
    *
    * @return array
    */
-  public function getTables($databaseName): array
+  public function getTablesFromServer($databaseName): array
   {
     try {
       $stmt = self::$pdo->query("SHOW TABLES FROM $databaseName;");
@@ -106,21 +107,51 @@ class Database
     }
   }
 
+
+  /**
+   * Get tables for specified database
+   *
+   * @return void
+   */
+  public function getTables()
+  {
+    $db = Database::getInstance();
+
+    $tables = [];
+    if (Request::input('db_name')) {
+      try {
+        $tables = $db->getTablesFromServer(Request::input('db_name'));
+      } catch (\Throwable $th) {
+        session('db_not_found', "Database doesn't exist");
+        Redirect::To('/dashboard');
+      }
+    } else {
+      return null;
+    }
+
+    $tables = array_map(function ($table) {
+      $table = array_values($table);
+      return array_pop($table);
+    }, $tables);
+
+    return $tables;
+  }
+
   /**
    * Retrieves table data
    *
    */
-  public function fetchTableContents($database, $tableName, $sql)
+  public function fetchTableContents($database, $tableName)
   {
     $stmt = self::$pdo->query("USE $database;");
     $stmt->execute();
 
-    if ($sql) {
-      $stmt = self::$pdo->query($sql);
-    } else {
+    try {
       $stmt = self::$pdo->query("SELECT * FROM $tableName;");
+    } catch (\Throwable $th) {
+      session('db_not_found', "Table doesn't exist");
+      Redirect::To('/dashboard');
     }
-
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }

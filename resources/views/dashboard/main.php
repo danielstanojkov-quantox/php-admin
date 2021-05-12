@@ -1,131 +1,67 @@
-<div class="w-75 bg-white" style="height: 100vh; overflow-y:scroll">
+<?php require app('app_root') . '/resources/views/inc/header.php'; ?>
 
-    <div class="bg-secondary p-2 pl-4 text-white">
-        <i class="fas fa-server"></i> Server: <?= $data['host'] ?>
+<div class="d-flex">
+    <?php require_once app('app_root') . "/resources/views/inc/sidebar.php" ?>
+
+
+    <div class="w-75 bg-white" style="height: 100vh; overflow-y:scroll">
+
+        <div class="bg-secondary p-2 pl-4 text-white">
+            <i class="fas fa-server"></i> Server: <?= $data['host'] ?>
+        </div>
+
+        <ul class="nav nav-tabs my-3 mx-3">
+            <li class="nav-item mr-3">
+                <a class="nav-link bg-dark text-light" href="<?= app('url_root') ?>/dashboard"><i class="fas fa-table"></i> Browse</a>
+            </li>
+            <li class="nav-item mr-3">
+                <a class="nav-link bg-dark text-light" href="#"><i class="fas fa-sticky-note"></i> SQL</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link bg-dark text-light" href="#"><i class="fas fa-file-import"></i> Import</a>
+            </li>
+        </ul>
+
+        <div class="px-3">
+            <?php if (isset($_GET['table'])) : ?>
+                <?php if (count($data['table_contents']) === 0) : ?>
+                    <h4 class="">Table doesn't have any content!</h4>
+                <?php else : ?>
+                    <table id="myTable" class="table table-responsive table-dark w-100">
+                        <thead>
+                            <?php foreach ($data['table_contents'][0] as $key => $value) : ?>
+                                <th>
+                                    <a class="text-success" href="#">
+                                        <?= $key ?>
+                                    </a>
+                                </th>
+                            <?php endforeach; ?>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($data['table_contents'] as $key => $value) : ?>
+                                <tr class="bg-dark">
+                                    <?php foreach ($value as $key => $value) : ?>
+                                        <td><?= $value === null ? 'NULL' : $value ?></td>
+                                    <?php endforeach; ?>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            <?php else : ?>
+                <h4 class="p-4">Please select any table to see further informations <i class="far text-warning fa-smile-beam"></i></h4>
+            <?php endif; ?>
+        </div>
     </div>
 
 
-    <table class="table table-sm p-3 table-responsive table-dark w-100"></table>
-
 </div>
-
-
-<script>
-    const anchors = document.querySelectorAll('.table__url');
-    const tableLinksParent = document.querySelector('.table__links--parent');
-    const tableHeadLinksParent = document.querySelector('.table');
-
-
-    tableHeadLinksParent.addEventListener('click', e => {
-        e.preventDefault();
-        const headEl = e.target.closest('.table__link');
-        if (!headEl) return;
-
-        appendQueryParameter(headEl.href);
-        fetchData();
-    });
-
-
-    // Functions
-    const fetchData = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const dbName = urlParams.get('db_name');
-        const tableName = urlParams.get('table');
-        let sqlQuery = urlParams.get('sql_query');
-
-        let url = `http://localhost/php_admin/Api/table/${dbName}/${tableName}`;
-        if (sqlQuery) {
-            sqlQuery = sqlQuery.replaceAll(" ", '_');
-            url += `/${sqlQuery}`;
-        }
-
-
-        fetch(url)
-            .then(res => res.json())
-            .then(data => {
-                document.querySelector('.table').innerHTML = '';
-                printTable(data);
-            })
-            .catch(err => {
-                console.error('Something went wrong!');
-            });
-    }
-
-    // Listeners 
-    tableLinksParent.addEventListener('click', e => {
-        e.preventDefault();
-        const tableAnchorEl = e.target.closest('.table__url');
-        if (!tableAnchorEl) return;
-
-        appendQueryParameter(tableAnchorEl.href);
-        fetchData();
-    });
-
-
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('db_name') && urlParams.get('table')) {
-        fetchData();
-    };
-
-
-
-
-    function printTable(data) {
-        if (!data.length) {
-            const output = `<h5 class="p-4 mb-0">No information available for this table!</h5>`;
-            document.querySelector('.table').insertAdjacentHTML('beforeend', output);
-            return;
-        }
-
-        const table = buildTable(data);
-
-        document.querySelector('.table').insertAdjacentHTML('beforeend', table);
-    }
-
-
-
-    function buildTable(data) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const dbName = urlParams.get('db_name');
-        const tableName = urlParams.get('table');
-
-        const keys = Object.keys(data[0]);
-
-        const thead = buildTableHead(keys, dbName, tableName);
-        const tbody = buildTableBody(data, keys, dbName, tableName);
-        return thead + tbody;
-    }
-
-    function buildTableHead(keys, dbName, tableName) {
-        let output = `<thead><tr>`;
-
-        keys.forEach(key => {
-            let sql = `SELECT * FROM ${tableName} ORDER BY ${key} DESC`;
-            output += `<th scope="col">
-            <a class="text-success table__link" href="${window.location.href}&sql_query=${sql}">${key}</a>
-            </th>`
+<script defer>
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            paging: false
         });
-
-        output += `</tr></thead>`;
-
-        return output;
-    }
-
-    function buildTableBody(data, keys, dbName, tablename) {
-        let output = `<tbody><tr>`;
-
-        data.forEach(element => {
-            output += `<tr>`;
-            keys.forEach(key => {
-                output += `<td>${element[key]}</td>`
-            })
-            output += `</tr>`;
-        });
-        output += `</tr></tbody>`;
-        return output;
-    }
-
-    function appendQueryParameter(parameter) {
-        window.history.pushState({}, null, parameter);
-    }
+    });
 </script>
+
+<?php require app('app_root') . '/resources/views/inc/footer.php'; ?>

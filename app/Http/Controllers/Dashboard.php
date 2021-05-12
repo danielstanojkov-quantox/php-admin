@@ -28,38 +28,16 @@ class Dashboard extends Controller
       'host' => Auth::host(),
       'username' => Auth::username(),
       'databases' => $db->allDatabaseNames(),
-      'tables' => $this->getTables()
+      'tables' => $db->getTables()
     ];
 
-    $this->view('dashboard/index', $data);
-  }
-
-  /**
-   * Get tables for specified database
-   *
-   * @return void
-   */
-  private function getTables()
-  {
-    $db = Database::getInstance();
-
-    $tables = [];
-    if (Request::input('db_name')) {
-      try {
-        $tables = $db->getTables(Request::input('db_name'));
-      } catch (\Throwable $th) {
-        session('db_not_found', "Database doesn't exist");
-        Redirect::To('/dashboard');
-      }
-    } else {
-      return null;
+    if (Request::has('table')) {
+      $data['table_contents'] = $db->fetchTableContents(
+        Request::input('db_name'),
+        Request::input('table')
+      );
     }
 
-    $tables = array_map(function ($table) {
-      $table = array_values($table);
-      return array_pop($table);
-    }, $tables);
-
-    return $tables;
+    $this->view('dashboard/main', $data);
   }
 }
