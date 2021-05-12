@@ -1,4 +1,4 @@
-<?php require app('APP_ROOT') . '/resources/views/inc/header.php'; ?>
+<?php require app('app_root') . '/resources/views/inc/header.php'; ?>
 
 <div class="container d-flex align-items-center justify-content-center mt-5">
     <div class="row w-100">
@@ -13,7 +13,7 @@
                         <div class="alert alert-danger text-dark"><?= session('login_failed') ?></div>
                     <?php endif; ?>
 
-                    <form class="form-signin" method="POST" action="<?= app('URL_ROOT') . '/login'  ?>">
+                    <form class="form-signin" method="POST" action="<?= app('url_root') . '/login'  ?>">
                         <div class="form-label-group">
                             <input value="<?= sessionExists('host') ? session('host') : '' ?>" name="host" type="text" id="inputUserame" class="form-control" placeholder="Host" autofocus>
                             <label for="inputUserame">Host</label>
@@ -37,4 +37,4 @@
     </div>
 </div>
 
-<?php require app('APP_ROOT') . '/resources/views/inc/footer.php'; ?>
+<?php require app('app_root') . '/resources/views/inc/footer.php'; ?>

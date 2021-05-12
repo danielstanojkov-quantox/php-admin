@@ -11,12 +11,16 @@ class Api extends Controller
      * Table contents
      *
      */
-    public function table($database, $tableName)
+    public function table($database, $tableName, $sql = null)
     {
-        $db = Database::getInstance();
+       
+        if($sql){
+            $sql = str_replace('_', ' ', $sql);
+        }
 
+        $db = Database::getInstance();
         echo json_encode(
-            $db->fetchTableContents($database, $tableName)
+            $db->fetchTableContents($database, $tableName, $sql)
         );
     }
 }

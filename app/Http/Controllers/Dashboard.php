@@ -24,7 +24,7 @@ class Dashboard extends Controller
 
     $db = Database::getInstance();
 
-    $data = [
+    $data =  [
       'host' => Auth::host(),
       'username' => Auth::username(),
       'databases' => $db->allDatabaseNames(),
@@ -33,7 +33,6 @@ class Dashboard extends Controller
 
     $this->view('dashboard/index', $data);
   }
-
 
   /**
    * Get tables for specified database

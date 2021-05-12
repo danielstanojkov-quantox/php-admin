@@ -70,7 +70,13 @@ function fullUrl()
     return "http://" . $domain . $_SERVER['REQUEST_URI'];
 }
 
-function app($key)
+/**
+ * Retrieve configuration variable
+ *
+ * @param string $key
+ * @return string
+ */
+function app(string $key): string
 {
     $configurations = require(dirname(__DIR__, 2) . '/config/app.php');
     return $configurations[$key];

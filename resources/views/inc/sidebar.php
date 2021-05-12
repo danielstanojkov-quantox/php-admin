@@ -2,12 +2,12 @@
     <!-- UserInfo -->
     <div class="d-flex align-items-center mb-4">
         <div class="w-50">
-            <img class="img-fluid" src="<?= app('URL_ROOT') ?>/public/img/male-placeholder-image.jpeg" alt="">
+            <img class="img-fluid" src="<?= app('url_root') ?>/public/img/male-placeholder-image.jpeg" alt="">
         </div>
 
         <div class="w-50 ml-3">
             <p class="text-right">
-                <a href="<?= app('URL_ROOT') ?>/logout">
+                <a href="<?= app('url_root') ?>/logout">
                     <i class="fas fa-power-off text-danger"></i>
                 </a>
             </p>
@@ -44,7 +44,7 @@
     <hr>
 
     <?php if (!is_null($data['tables'])) : ?>
-        <div>
+        <div class="table__links--parent">
             <?php if (count($data['tables']) == 0) : ?>
                 <p class="text-dark font-weight-bold">No tables available</p>
             <?php else : ?>
@@ -54,10 +54,8 @@
             <?php foreach ($data['tables'] as $table) : ?>
                 <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-table text-primary"></i>
-                    <a href="http://localhost/php_admin/dashboard?db_name=<?= $_GET['db_name'] ?>&table=<?=$table?>">
-                        <h6 class="d-flex align-items-center ml-2 mb-0">
-                            <?= $table; ?>
-                        </h6>
+                    <a class="table__url d-flex align-items-center ml-2 mb-0" href="http://localhost/php_admin/dashboard?db_name=<?= $_GET['db_name'] ?>&table=<?= $table ?>">
+                        <?= $table; ?>
                     </a>
                 </div>
             <?php endforeach; ?>

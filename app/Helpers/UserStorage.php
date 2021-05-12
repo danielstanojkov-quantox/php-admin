@@ -23,7 +23,7 @@ class UserStorage
      */
     public static function add(array $user): void
     {
-        if (!File::exists(app('USERS'))) {
+        if (!File::exists(app('users'))) {
             static::makeStorageFolder();
         }
 
@@ -75,7 +75,7 @@ class UserStorage
     public static function getUsers(): mixed
     {
         return json_decode(
-            Hash::decrypt(File::get(app('USERS')))
+            Hash::decrypt(File::get(app('users')))
         );
     }
 
@@ -88,7 +88,7 @@ class UserStorage
     public static function setUsers(array $users): void
     {
         File::put(
-            app('USERS'),
+            app('users'),
             Hash::encrypt(json_encode($users))
         );
     }

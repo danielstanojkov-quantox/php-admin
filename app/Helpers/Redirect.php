@@ -12,7 +12,7 @@ class Redirect
      */
     public static function to(string $uri): void
     {
-        $uri = app('URL_ROOT') . $uri;
+        $uri = app('url_root') . $uri;
         header("Location: $uri");
         die;
     }

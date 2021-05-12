@@ -44,14 +44,14 @@ class Database
    */
   private function __construct($credentials)
   {
-    
-   
+
+
     if (Cookie::exists('user_id')) {
       $user = UserStorage::getUserById(Cookie::get('user_id'));
       $credentials = (array) $user;
     }
 
-    
+
     $dsn = "mysql:host=" . $credentials['host'];
     $options = array(
       PDO::ATTR_PERSISTENT => true,
@@ -110,11 +110,17 @@ class Database
    * Retrieves table data
    *
    */
-  public function fetchTableContents($database, $tableName)
+  public function fetchTableContents($database, $tableName, $sql)
   {
     $stmt = self::$pdo->query("USE $database;");
     $stmt->execute();
-    $stmt = self::$pdo->query("SELECT * FROM $tableName;");
+
+    if ($sql) {
+      $stmt = self::$pdo->query($sql);
+    } else {
+      $stmt = self::$pdo->query("SELECT * FROM $tableName;");
+    }
+
 
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
   }

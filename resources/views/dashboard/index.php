@@ -1,9 +1,9 @@
-<?php require app('APP_ROOT') . '/resources/views/inc/header.php'; ?>
+<?php require app('app_root') . '/resources/views/inc/header.php'; ?>
 
 <div class="d-flex">
-    <?php require_once app('APP_ROOT') . "/resources/views/dashboard/sidebar.php" ?>
-    <?php require_once app('APP_ROOT') . "/resources/views/dashboard/main.php" ?>
+    <?php require_once app('app_root') . "/resources/views/inc/sidebar.php" ?>
+    <?php require_once app('app_root') . "/resources/views/dashboard/main.php" ?>
 </div>
 
 
-<?php require app('APP_ROOT') . '/resources/views/inc/footer.php'; ?>
+<?php require app('app_root') . '/resources/views/inc/footer.php'; ?>
