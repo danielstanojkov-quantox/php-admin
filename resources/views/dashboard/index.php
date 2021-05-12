@@ -1,4 +1,4 @@
-<?php require APPROOT . '/resources/views/inc/header.php'; ?>
+<?php require app('APP_ROOT'). '/resources/views/inc/header.php'; ?>
 
 
 <div class="d-flex">
@@ -13,4 +13,4 @@
 </div>
 
 
-<?php require APPROOT . '/resources/views/inc/footer.php'; ?>
+<?php require app('APP_ROOT') . '/resources/views/inc/footer.php'; ?>

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Helpers\Redirect;
 use App\Http\Middleware\IsAuthenticatedMiddleware;
 use App\Libraries\Controller;
-use App\Libraries\Database;
 
 class Dashboard extends Controller
 {
@@ -19,6 +18,7 @@ class Dashboard extends Controller
     if (!IsAuthenticatedMiddleware::handle()) {
       Redirect::to('/login');
     }
+
     
     $this->view('dashboard/index');
   }

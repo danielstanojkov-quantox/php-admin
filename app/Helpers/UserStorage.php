@@ -5,13 +5,6 @@ namespace App\Helpers;
 class UserStorage
 {
     /**
-     * Path to user's storage
-     *
-     * @var string
-     */
-    public static $path = USERS;
-
-    /**
      * Creates storage folder for users on server
      *
      * @return void
@@ -30,7 +23,7 @@ class UserStorage
      */
     public static function add(array $user): void
     {
-        if (!File::exists(static::$path)) {
+        if (!File::exists(app('USERS'))) {
             static::makeStorageFolder();
         }
 
@@ -82,7 +75,7 @@ class UserStorage
     public static function getUsers(): mixed
     {
         return json_decode(
-            Hash::decrypt(File::get(static::$path))
+            Hash::decrypt(File::get(app('USERS')))
         );
     }
 
@@ -95,7 +88,7 @@ class UserStorage
     public static function setUsers(array $users): void
     {
         File::put(
-            static::$path,
+            app('USERS'),
             Hash::encrypt(json_encode($users))
         );
     }

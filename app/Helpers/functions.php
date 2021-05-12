@@ -1,5 +1,7 @@
 <?php
 
+use function DI\string;
+
 /**
  * Session flush message helper 
  *
@@ -38,7 +40,9 @@ function sessionExists(string $key): bool
  */
 function env(string $key): mixed
 {
-    $data = file_get_contents(ENV);
+    $data = file_get_contents(
+        dirname(__DIR__, 2) . '/.env'
+    );
 
     $data = explode("\n", $data);
 
@@ -54,4 +58,10 @@ function env(string $key): mixed
     $string = trim(substr($string, 1));
 
     return $string;
+}
+
+function app($key)
+{
+    $configurations = require(dirname(__DIR__, 2) . '/config/app.php');
+    return $configurations[$key];
 }
