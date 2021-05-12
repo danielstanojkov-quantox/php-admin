@@ -38,7 +38,9 @@ function sessionExists(string $key): bool
  */
 function env(string $key): mixed
 {
-    $data = file_get_contents(ENV);
+    $data = file_get_contents(
+        dirname(__DIR__, 2) . '/.env'
+    );
 
     $data = explode("\n", $data);
 
@@ -66,4 +68,10 @@ function fullUrl()
     $domain = $_SERVER['HTTP_HOST'];
 
     return "http://" . $domain . $_SERVER['REQUEST_URI'];
+}
+
+function app($key)
+{
+    $configurations = require(dirname(__DIR__, 2) . '/config/app.php');
+    return $configurations[$key];
 }

@@ -2,12 +2,12 @@
     <!-- UserInfo -->
     <div class="d-flex align-items-center mb-4">
         <div class="w-50">
-            <img class="img-fluid" src="<?= URLROOT ?>/public/img/male-placeholder-image.jpeg" alt="">
+            <img class="img-fluid" src="<?= app('URL_ROOT') ?>/public/img/male-placeholder-image.jpeg" alt="">
         </div>
 
         <div class="w-50 ml-3">
             <p class="text-right">
-                <a href="<?= URLROOT ?>/logout">
+                <a href="<?= app('URL_ROOT') ?>/logout">
                     <i class="fas fa-power-off text-danger"></i>
                 </a>
             </p>

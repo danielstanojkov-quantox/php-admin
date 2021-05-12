@@ -3,10 +3,9 @@
 namespace App\Models;
 
 use App\Helpers\UserStorage;
-use App\Libraries\Controller;
 use Carbon\Carbon;
 
-class User extends Controller
+class User
 {
     /**
      * User's Host

@@ -46,7 +46,7 @@ class File
      */
     public static function makeDirectory(string $dirname): void
     {
-        mkdir(APPROOT . "/$dirname");
+        mkdir(app('APP_ROOT') . "/$dirname");
     }
 
     /**
@@ -58,7 +58,7 @@ class File
      */
     public static function makeFile(string $filename, string $content): void
     {
-        $file = fopen(APPROOT . "/$filename", "w");
+        $file = fopen(app('APP_ROOT') . "/$filename", "w");
         fwrite($file, $content);
         fclose($file);
     }
