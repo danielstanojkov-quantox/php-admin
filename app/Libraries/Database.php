@@ -130,6 +130,49 @@ class Database
   }
 
   /**
+   * Retrieve all Character Sets
+   *
+   * @return array
+   */
+  public function getCharsets(): array
+  {
+    $stmt = self::$pdo->query("SHOW CHARSET");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Retrieve all collations
+   *
+   * @return array
+   */
+  public function getCollations(): array
+  {
+    $stmt = self::$pdo->query("SHOW COLLATION;");
+    $stmt->execute();
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  /**
+   * Create new database on server
+   *
+   * @param string $dbName
+   * @param string $charset
+   * @param string $collation
+   * @return void
+   */
+  public function createDatabase(string $dbName, string $charset, string $collation): void
+  {
+    $sql = "CREATE DATABASE $dbName CHARACTER SET $charset COLLATE $collation";
+
+    try {
+      self::$pdo->query($sql);
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+  }
+
+  /**
    * Retrieves table data
    *
    */

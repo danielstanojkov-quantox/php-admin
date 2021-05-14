@@ -118,3 +118,8 @@ body {
   color: white;
   background-color: #3b5998;
 }
+
+
+.dropdown-toggle:after {
+  content: none !important;
+}

@@ -10,8 +10,8 @@
             <i class="fas fa-server"></i> Server: <?= $data['host'] ?>
         </div>
 
+        <!-- Create Database Form -->
         <?php require_once app('app_root') . "/resources/views/includes/nav.php" ?>
-
 
         <?php require_once app('app_root') . "/resources/views/dashboard/sqlTab.php" ?>
 

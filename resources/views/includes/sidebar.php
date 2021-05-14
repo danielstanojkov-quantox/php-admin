@@ -8,7 +8,7 @@
         <div class="w-50 ml-3">
             <p class="text-right">
                 <a href="<?= app('url_root') ?>/logout">
-                    <i class="fas fa-power-off text-danger"></i>
+                    <i class="fas fa-sign-out-alt text-danger"></i>
                 </a>
             </p>
             <h5><strong>Host: </strong> <br><?= $data['host'] ?></h5>
@@ -16,6 +16,9 @@
             <h5><strong>Username: </strong> <br><?= $data['username'] ?></h5>
         </div>
     </div>
+
+    <?php require_once app('app_root') . "/resources/views/includes/createForm.php" ?>
+
 
     <!-- Select Form -->
     <?php if (sessionExists('db_err')) : ?>
