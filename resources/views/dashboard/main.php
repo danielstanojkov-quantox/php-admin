@@ -12,11 +12,13 @@
 
         <?php require_once app('app_root') . "/resources/views/includes/nav.php" ?>
 
-        
+
+        <?php require_once app('app_root') . "/resources/views/dashboard/sqlTab.php" ?>
+
         <div class="px-3">
             <?php if (isset($_GET['table'])) : ?>
                 <?php if (count($data['table_contents']) === 0) : ?>
-                    <h4 class="">Table doesn't have any content!</h4>
+                    <h4>Table doesn't have any content!</h4>
                 <?php else : ?>
                     <table id="myTable" class="table table-responsive table-dark w-100">
                         <thead>
@@ -47,11 +49,56 @@
 
 
 </div>
+
+<script defer src="<?= app('url_root') ?>/public/js/functions.js"></script>
 <script defer>
+    // Table Filtering
     $(document).ready(function() {
         $('#myTable').DataTable({
-            paging: false,
+            paging: false
         });
+    });
+
+    // Custom SQL Queries
+    const sqlTabBtn = document.getElementById('sql__tab--btn');
+    const sqlTab = document.getElementById('sql__tab');
+    const submitQueryBtn = document.getElementById('query__submit');
+    const parent = document.querySelector('.sql__tab .results');
+
+    const submitQuery = () => {
+        renderSpinner(parent);
+        const db_name = getUrlParameter('db_name');
+        const sql = document.getElementById('query__text-area').value.trim();
+
+        if (!sql) {
+            printError('No Query String Provided!', parent);
+            return;
+        }
+
+        axios.get(`http://localhost/php_admin/api/results?db_name=${db_name}&query=${sql}`)
+            .then(data => {
+                printTable(data, parent);
+            })
+            .catch(err => {
+                printError(err.response.data.message, parent);
+            })
+    }
+
+    sqlTabBtn.addEventListener('click', function() {
+        const aboutBox = new WinBox({
+            title: 'Custom Query',
+            width: '80%',
+            height: '80%',
+            x: "center",
+            y: "center",
+            mount: document.querySelector("#sql__tab .content"),
+            onfocus: function() {
+                this.setBackground('#000')
+            },
+            onblur: function() {
+                this.setBackground('#777')
+            },
+        })
     });
 </script>
 

@@ -146,7 +146,18 @@ class Database
     }
   }
 
+  public function sql($database, $sql)
+  {
+    $stmt = self::$pdo->query("USE $database;");
+    $stmt->execute();
 
+    try {
+      $stmt = self::$pdo->query($sql);
+      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+  }
 
 
   // /**

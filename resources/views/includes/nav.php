@@ -2,9 +2,11 @@
     <li class="nav-item mr-3">
         <a class="nav-link bg-dark text-light" href="<?= app('url_root') ?>/dashboard"><i class="fas fa-table"></i> Browse</a>
     </li>
-    <li class="nav-item mr-3">
-        <a class="nav-link bg-dark text-light" href="#"><i class="fas fa-sticky-note"></i> SQL</a>
-    </li>
+    <?php if (isset($_GET['db_name'])) : ?>
+        <li class="nav-item mr-3">
+            <button class="nav-link bg-dark text-light" id="sql__tab--btn"><i class="fas fa-sticky-note"></i> SQL</button>
+        </li>
+    <?php endif; ?>
     <li class="nav-item mr-3">
         <a class="nav-link bg-dark text-light" href="#"><i class="fas fa-file-import"></i> Import</a>
     </li>

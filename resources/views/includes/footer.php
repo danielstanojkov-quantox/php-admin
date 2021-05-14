@@ -1,5 +1,4 @@
-  <script defer src="<?= app('url_root'); ?>/js/main.js"></script>
+<script defer src="<?= app('url_root') ?>/js/winbox.bundle.js"></script>
+</body>
 
-  </body>
-
-  </html>
+</html>
