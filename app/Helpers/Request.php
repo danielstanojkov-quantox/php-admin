@@ -62,4 +62,26 @@ class Request
     {
         return key_exists($parameter, static::all() ?? []);
     }
+
+    /**
+     * Return uploaded file
+     *
+     * @param string $filename
+     * @return array
+     */
+    public static function file(string $filename): array
+    {
+        return $_FILES[$filename];
+    }
+
+    /**
+     * Check if file is being uploaded
+     *
+     * @param string $filename
+     * @return bool
+     */
+    public static function fileExists(string $filename): bool
+    {
+        return isset($_FILES[$filename]);
+    }
 }

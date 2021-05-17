@@ -189,6 +189,13 @@ class Database
     }
   }
 
+  /**
+   * Execute sql query on a database
+   *
+   * @param string $database
+   * @param string $sql
+   * @return mixed
+   */
   public function sql($database, $sql)
   {
     $stmt = self::$pdo->query("USE $database;");
@@ -202,6 +209,24 @@ class Database
     }
   }
 
+  /**
+   * Import Database
+   *
+   * @param string $database
+   * @param string $sql
+   * @return void
+   */
+  public function import(string $database, string $sql): void
+  {
+    $stmt = self::$pdo->query("USE $database;");
+    $stmt->execute();
+
+    try {
+      $stmt = self::$pdo->query($sql);
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+  }
 
   // /**
   //  * Prepare statement with query

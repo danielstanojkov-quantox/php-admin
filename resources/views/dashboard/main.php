@@ -4,7 +4,7 @@
     <?php require_once app('app_root') . "/resources/views/includes/sidebar.php" ?>
 
 
-    <div class="w-75 bg-white" style="height: 100vh; overflow-y:scroll">
+    <div class="w-75 bg-white" style="height: 100vh; overflow-y:scroll; overflow-x:hidden">
 
         <div class="bg-secondary p-2 pl-4 text-white">
             <i class="fas fa-server"></i> Server: <?= $data['host'] ?>
@@ -13,7 +13,8 @@
         <!-- Create Database Form -->
         <?php require_once app('app_root') . "/resources/views/includes/nav.php" ?>
 
-        <?php require_once app('app_root') . "/resources/views/dashboard/sqlTab.php" ?>
+        <!-- Tabs -->
+        <?php require_once app('app_root') . "/resources/views/dashboard/tabs/sql.php" ?>
 
         <div class="px-3">
             <?php if (isset($_GET['table'])) : ?>
@@ -45,6 +46,31 @@
                 <h4 class="p-4">Please select any table to see further informations <i class="far text-warning fa-smile-beam"></i></h4>
             <?php endif; ?>
         </div>
+
+        <div class="row mt-5">
+            <div class="col-6">
+                <?php require_once app('app_root') . "/resources/views/dashboard/tabs/import.php" ?>
+            </div>
+
+            <div class="col-6">
+                <!-- <div id="import__database" class="text-dark border">
+                    <div class="import__database content p-4">
+                        <div class="lead mb-4"><i class="fas fa-file-export"></i> Export Database:</div>
+                        <form enctype="multipart/form-data" method="POST" action="<?= app('url_root') ?>/import" class="d-flex justify-content-between align-items-center">
+                            <div class="form-group">
+                                <label for="sql_file">Upload file:</label>
+                                <input type="file" name="sql_file" id="sql_file">
+                                <small id="sqlHelp" class="form-text text-muted">The file type must be sql.</small>
+                            </div>
+                            <button type="submit" class="btn btn-success">Import</button>
+                        </form>
+
+                        <div class="import__feedback"></div>
+                    </div>
+                </div> -->
+            </div>
+
+        </div>
     </div>
 
 
@@ -58,6 +84,7 @@
             paging: false
         });
     });
+
 
     // Custom SQL Queries
     const sqlTabBtn = document.getElementById('sql__tab--btn');
