@@ -90,13 +90,14 @@ class Database
   /**
    * Retrieves all table names for specified database
    *
+   * @param string $databaseName
    * @return array
    */
-  public function getTablesFromServer($databaseName): array
+  public function getTablesFromServer(string $databaseName): array
   {
     try {
-      $stmt = self::$pdo->query("SHOW TABLES FROM $databaseName;");
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $statement = self::$pdo->query("SHOW TABLES FROM $databaseName;");
+      return $statement->fetchAll(PDO::FETCH_ASSOC);
     } catch (\Throwable $th) {
       throw $th;
     }
@@ -105,9 +106,9 @@ class Database
   /**
    * Get tables for specified database
    *
-   * @return void
+   * @return mixed
    */
-  public function getTables()
+  public function getTables(): mixed
   {
     $db = Database::getInstance();
 
@@ -136,9 +137,9 @@ class Database
    */
   public function getCharsets(): array
   {
-    $stmt = self::$pdo->query("SHOW CHARSET");
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $statement = self::$pdo->query("SHOW CHARSET");
+    $statement->execute();
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -148,9 +149,9 @@ class Database
    */
   public function getCollations(): array
   {
-    $stmt = self::$pdo->query("SHOW COLLATION;");
-    $stmt->execute();
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $statement = self::$pdo->query("SHOW COLLATION;");
+    $statement->execute();
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -178,111 +179,34 @@ class Database
    */
   public function fetchTableContents($database, $tableName)
   {
-    $stmt = self::$pdo->query("USE $database;");
-    $stmt->execute();
+    $statement = self::$pdo->query("USE $database;");
+    $statement->execute();
 
     try {
-      $stmt = self::$pdo->query("SELECT * FROM $tableName;");
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $statement = self::$pdo->query("SELECT * FROM $tableName;");
+      return $statement->fetchAll(PDO::FETCH_ASSOC);
     } catch (\Throwable $th) {
       throw $th;
     }
   }
 
-  public function sql($database, $sql)
+  /**
+   * Execute sql query on database
+   *
+   * @param string $database
+   * @param string $sql
+   * @return array
+   */
+  public function sql(string $database, string $sql): array
   {
-    $stmt = self::$pdo->query("USE $database;");
-    $stmt->execute();
+    $statement = self::$pdo->query("USE $database;");
+    $statement->execute();
 
     try {
-      $stmt = self::$pdo->query($sql);
-      return $stmt->fetchAll(PDO::FETCH_ASSOC);
+      $statement = self::$pdo->query($sql);
+      return $statement->fetchAll(PDO::FETCH_ASSOC);
     } catch (\Throwable $th) {
       throw $th;
     }
   }
-
-
-  // /**
-  //  * Prepare statement with query
-  //  *
-  //  * @param string $sql
-  //  * @return void
-  //  */
-  // public function query($sql): void
-  // {
-  //   var_dump(static::$instance);
-  //   die;
-  //   // static::$stmt = self::$instance->prepare($sql);
-  // }
-  // /**
-  //  * Bind values
-  //  *
-  //  * @param string $param
-  //  * @param string $value
-  //  * @param string $type
-  //  * @return void
-  //  */
-  // public function bind($param, $value, $type = null): void
-  // {
-  //   if (is_null($type)) {
-  //     switch (true) {
-  //       case is_int($value):
-  //         $type = PDO::PARAM_INT;
-  //         break;
-  //       case is_bool($value):
-  //         $type = PDO::PARAM_BOOL;
-  //         break;
-  //       case is_null($value):
-  //         $type = PDO::PARAM_NULL;
-  //         break;
-  //       default:
-  //         $type = PDO::PARAM_STR;
-  //     }
-  //   }
-
-  //   $this->stmt->bindValue($param, $value, $type);
-  // }
-
-  // /**
-  //  * Execute the prepared statement
-  //  *
-  //  * @return bool
-  //  */
-  // public function execute(): bool
-  // {
-  //   return $this->stmt->execute();
-  // }
-
-  // /**
-  //  * Get result set as array of objects
-  //  *
-  //  * @return bool
-  //  */
-  // public function resultSet(): bool
-  // {
-  //   $this->execute();
-  //   return $this->stmt->fetchAll(PDO::FETCH_OBJ);
-  // }
-
-  // /**
-  //  * Get single record as object
-  //  *
-  //  * @return bool
-  //  */
-  // public function single(): bool
-  // {
-  //   $this->execute();
-  //   return $this->stmt->fetch(PDO::FETCH_OBJ);
-  // }
-
-  // /**
-  //  * Get row count
-  //  *
-  //  * @return int
-  //  */
-  // public function rowCount(): int
-  // {
-  //   return $this->stmt->rowCount();
-  // }
 }

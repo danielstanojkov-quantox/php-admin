@@ -42,7 +42,7 @@ class Dashboard extends Controller
     try {
       $tables = $db->getTables();
     } catch (\Throwable $th) {
-      session('db_err', $th->getMessage());
+      session('db_error', $th->getMessage());
       Redirect::To('/dashboard');
     }
 
@@ -75,7 +75,7 @@ class Dashboard extends Controller
         Request::input('table')
       );
     } catch (\Throwable $th) {
-      session('db_err', $th->getMessage());
+      session('db_error', $th->getMessage());
       Redirect::To('/dashboard');
     }
   }

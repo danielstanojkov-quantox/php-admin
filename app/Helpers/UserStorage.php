@@ -61,7 +61,7 @@ class UserStorage
         $users = static::getUsers();
 
         $users = array_filter($users, function ($user) use ($id) {
-            return (int)$user->id === (int) $id;
+            return ((int)$user->id) === ((int) $id);
         });
 
         return array_pop($users) ?? null;
