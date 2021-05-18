@@ -19,6 +19,10 @@ class Import extends Controller
      */
     public function index(): void
     {
+        if (!Request::isPost()) {
+            Redirect::to('/dashboard');
+        }
+
         $dbName = Request::input('db_name');
         $file = Request::file('sql_file');
 

@@ -7,6 +7,10 @@
                 <input type="file" name="sql_file" id="sql_file">
                 <input type="hidden" name="db_name" value="<?= $_GET['db_name'] ?? '' ?>">
                 <small id="sqlHelp" class="form-text text-muted">The file type must be sql.</small>
+                <small id="sqlHelp" class="form-text text-muted">
+                <strong>Note:</strong>
+                    First you need to select database
+                </small>
             </div>
             <button type="submit" class="btn btn-success">Import</button>
         </form>

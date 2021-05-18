@@ -47,27 +47,13 @@
             <?php endif; ?>
         </div>
 
-        <div class="row mt-5">
+        <div class="row mt-5 d-flex align-items-center justify-content-between">
             <div class="col-6">
                 <?php require_once app('app_root') . "/resources/views/dashboard/tabs/import.php" ?>
             </div>
 
             <div class="col-6">
-                <!-- <div id="import__database" class="text-dark border">
-                    <div class="import__database content p-4">
-                        <div class="lead mb-4"><i class="fas fa-file-export"></i> Export Database:</div>
-                        <form enctype="multipart/form-data" method="POST" action="<?= app('url_root') ?>/import" class="d-flex justify-content-between align-items-center">
-                            <div class="form-group">
-                                <label for="sql_file">Upload file:</label>
-                                <input type="file" name="sql_file" id="sql_file">
-                                <small id="sqlHelp" class="form-text text-muted">The file type must be sql.</small>
-                            </div>
-                            <button type="submit" class="btn btn-success">Import</button>
-                        </form>
-
-                        <div class="import__feedback"></div>
-                    </div>
-                </div> -->
+                <?php require_once app('app_root') . "/resources/views/dashboard/tabs/export.php" ?>
             </div>
 
         </div>
