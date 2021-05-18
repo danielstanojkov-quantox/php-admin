@@ -2,7 +2,7 @@
     <li class="nav-item mr-3">
         <a class="nav-link bg-info text-light" href="<?= app('url_root') ?>/dashboard"><i class="fas fa-table"></i> Browse</a>
     </li>
-    <?php if (isset($_GET['db_name'])) : ?>
+    <?php if (request('db_name')) : ?>
         <li class="nav-item mr-3">
             <button class="nav-link bg-info text-light" id="sql__tab--btn"><i class="fas fa-sticky-note"></i> SQL</button>
         </li>

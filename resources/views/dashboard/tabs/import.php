@@ -5,10 +5,10 @@
             <div class="form-group">
                 <label for="sql_file">Upload file:</label>
                 <input type="file" name="sql_file" id="sql_file">
-                <input type="hidden" name="db_name" value="<?= $_GET['db_name'] ?? '' ?>">
+                <input type="hidden" name="db_name" value="<?= request('db_name') ?? '' ?>">
                 <small id="sqlHelp" class="form-text text-muted">The file type must be sql.</small>
                 <small id="sqlHelp" class="form-text text-muted">
-                <strong>Note:</strong>
+                    <strong>Note:</strong>
                     First you need to select database
                 </small>
             </div>

@@ -32,7 +32,7 @@
             <select name="db_name" class="custom-select">
                 <option disabled selected>Choose database</option>
                 <?php foreach ($data['databases'] as $database) : ?>
-                    <option <?= (isset($_GET['db_name']) && $_GET['db_name'] == $database->Database) ? 'selected' : null ?> value="<?= $database->Database ?>">
+                    <option <?= (request('db_name') == $database->Database) ? 'selected' : null ?> value="<?= $database->Database ?>">
                         <?= $database->Database ?>
                     </option>
                 <?php endforeach; ?>
@@ -57,7 +57,7 @@
             <?php foreach ($data['tables'] as $table) : ?>
                 <div class="d-flex align-items-center mb-2">
                     <i class="fas fa-table text-primary"></i>
-                    <a class="table__url d-flex align-items-center ml-2 mb-0" href="http://localhost/php_admin/dashboard?db_name=<?= $_GET['db_name'] ?>&table=<?= $table ?>">
+                    <a class="table__url d-flex align-items-center ml-2 mb-0" href="http://localhost/php_admin/dashboard?db_name=<?= request('db_name') ?>&table=<?= $table ?>">
                         <?= $table; ?>
                     </a>
                 </div>

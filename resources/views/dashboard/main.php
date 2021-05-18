@@ -17,7 +17,7 @@
         <?php require_once app('app_root') . "/resources/views/dashboard/tabs/sql.php" ?>
 
         <div class="px-3">
-            <?php if (isset($_GET['table'])) : ?>
+            <?php if (request('table')) : ?>
                 <?php if (count($data['table_contents']) === 0) : ?>
                     <h4>Table doesn't have any content!</h4>
                 <?php else : ?>

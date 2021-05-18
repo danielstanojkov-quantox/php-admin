@@ -1,5 +1,7 @@
 <?php
 
+use App\Helpers\Request;
+
 /**
  * Session flush message helper 
  *
@@ -80,4 +82,15 @@ function app(string $key): string
 {
     $configurations = require(dirname(__DIR__, 2) . '/config/app.php');
     return $configurations[$key];
+}
+
+/**
+ * Return value from the request
+ *
+ * @param string $key
+ * @return mixed
+ */
+function request(string $key): mixed
+{
+    return Request::input($key);
 }

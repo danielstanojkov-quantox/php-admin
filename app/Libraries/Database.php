@@ -221,11 +221,11 @@ class Database
    */
   public function import(string $database, string $sql): void
   {
-    $stmt = self::$pdo->query("USE $database;");
-    $stmt->execute();
+    $statement = self::$pdo->query("USE $database;");
+    $statement->execute();
 
     try {
-      $stmt = self::$pdo->query($sql);
+      $statement = self::$pdo->query($sql);
     } catch (\Throwable $th) {
       throw $th;
     }
