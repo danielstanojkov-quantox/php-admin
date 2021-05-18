@@ -22,7 +22,7 @@ class Api extends Controller
         } catch (\Throwable $th) {
             header('HTTP/1.1 500 Internal Server Error');
             header('Content-Type: application/json; charset=UTF-8');
-            die(json_encode(array('message' => $th->getMessage(), 'code' => 1337)));
+            die(json_encode(array('message' => $th->getMessage(), 'code' => 500)));
         }
     }
 }

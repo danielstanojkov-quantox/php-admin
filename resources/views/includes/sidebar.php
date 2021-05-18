@@ -21,8 +21,8 @@
 
 
     <!-- Select Form -->
-    <?php if (sessionExists('db_err')) : ?>
-        <div class="alert alert-danger text-danger"><?= session('db_err') ?></div>
+    <?php if (sessionExists('db_error')) : ?>
+        <div class="alert alert-danger text-danger"><?= session('db_error') ?></div>
     <?php endif; ?>
 
     <div class="mb-4">
