@@ -50,10 +50,29 @@ class Dashboard extends Controller
       'host' => Auth::host(),
       'username' => Auth::username(),
       'databases' => $db->allDatabaseNames(),
-      'tables' => $tables
+      'tables' => $tables,
+      'accounts' => $this->getUsers()
     ];
 
+    // var_dump($data['accounts']);
+    // die;
     return $data;
+  }
+
+  /**
+   * Retrieves all users from server
+   *
+   * @return array
+   */
+  public function getUsers(): array
+  {
+    $db = Database::getInstance();
+    try {
+      $users = $db->getAccounts();
+    } catch (\Throwable $th) {
+      $users = [];
+    }
+    return $users;
   }
 
   /**

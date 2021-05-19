@@ -230,4 +230,56 @@ class Database
       throw $th;
     }
   }
+
+  /**
+   * Get all user accounts from server
+   *
+   * @return array
+   */
+  public function getAccounts(): array
+  {
+    try {
+      $statement = self::$pdo->query("SELECT user, host, authentication_string, Grant_priv FROM mysql.user;");
+      return $statement->fetchAll(PDO::FETCH_ASSOC);
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+  }
+
+  /**
+   * Create user
+   *
+   * @param string $host
+   * @param string $username
+   * @param string $password
+   * @param string $role
+   * @return void
+   */
+  public function createUser(string $host, string $username, string $password, string $role): void
+  {
+    try {
+      $sql = "CREATE USER '$username'@'$host'";
+      if (!empty($password)) {
+        $sql = $sql . " IDENTIFIED BY '$password'";
+      }
+
+      self::$pdo->query($sql);
+
+      switch ($role) {
+        case 'admin':
+          self::$pdo->query("GRANT ALL PRIVILEGES ON *.* TO $username@$host WITH GRANT OPTION;");
+          break;
+
+        case 'maintainer':
+          self::$pdo->query("GRANT SELECT,INSERT,UPDATE,DELETE ON *.* TO $username@$host;");
+          break;
+
+        case 'basic':
+          self::$pdo->query("GRANT SELECT ON *.* TO $username@$host;");
+          break;
+      }
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+  }
 }
