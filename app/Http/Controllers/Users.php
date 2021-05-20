@@ -35,6 +35,7 @@ class Users extends Controller
 
         try {
             $db->createUser(app('host'), $username, $password, $role);
+            Log::info("Account $username@" . app('host') . " created successfuly");
             Session::flash('registration_successfull', 'User has been created successfully');
         } catch (\Throwable $th) {
             Session::flash('registration_failed', $th->getMessage());
@@ -58,6 +59,7 @@ class Users extends Controller
         try {
             $db->deleteUser($account);
             Session::flash('user_deleted_success', 'User account has been removed successfully');
+            Log::info("Account $account deleted successfuly");
         } catch (\Throwable $th) {
             Session::flash('user_deleted_error', $th->getMessage());
             Log::error($th->getMessage());

@@ -22,7 +22,7 @@ class Log
         $this->createLogFile();
 
         static::$logger = new Logger('phpAdmin');
-        static::$logger->pushHandler(new StreamHandler(app('logs'), Logger::WARNING));
+        static::$logger->pushHandler(new StreamHandler(app('logs'), Logger::DEBUG));
     }
 
     /**
@@ -76,5 +76,17 @@ class Log
     {
         $logger = static::getInstance();
         $logger->warning($message);
+    }
+
+    /**
+     * Logs info messages
+     *
+     * @param string $message
+     * @return void
+     */
+    public static function info(string $message): void
+    {
+        $logger = static::getInstance();
+        $logger->info($message);
     }
 }

@@ -38,6 +38,7 @@ class Import extends Controller
 
         try {
             $db->import($dbName, $sql);
+            Log::info("Database $dbName has been imported successfully");
             Session::flash('import__success', "Your database has been imported successfully.");
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

@@ -153,6 +153,7 @@ class Dashboard extends Controller
     try {
       $db->createDatabase($dbName, $charset, $collation);
       Session::flash('db_creation_success', 'Database created successfully');
+      Log::info("Database $dbName created successfully");
       Redirect::to('/dashboard');
     } catch (\Throwable $th) {
       Session::flash('db_creation_error', $th->getMessage());

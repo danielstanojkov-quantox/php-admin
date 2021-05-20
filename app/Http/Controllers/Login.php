@@ -43,6 +43,7 @@ class Login extends Controller
 
         try {
             Database::getInstance($credentials);
+            Log::info("User " . $credentials['username'] . " has been logged in.");
         } catch (\Throwable $e) {
 
             Session::flash('login_failed', $e->getMessage());
