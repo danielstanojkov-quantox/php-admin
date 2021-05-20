@@ -4,7 +4,7 @@
     <?php require_once app('app_root') . "/resources/views/includes/sidebar.php" ?>
 
 
-    <div class="w-75 bg-white" style="height: 100vh; overflow-y:scroll">
+    <div class="w-75 bg-white" style="height: 100vh; overflow-y:scroll; overflow-x:hidden">
 
         <div class="bg-secondary p-2 pl-4 text-white">
             <i class="fas fa-server"></i> Server: <?= $data['host'] ?>
@@ -13,10 +13,11 @@
         <!-- Create Database Form -->
         <?php require_once app('app_root') . "/resources/views/includes/nav.php" ?>
 
-        <?php require_once app('app_root') . "/resources/views/dashboard/sqlTab.php" ?>
+        <!-- Tabs -->
+        <?php require_once app('app_root') . "/resources/views/dashboard/tabs/sql.php" ?>
 
         <div class="px-3">
-            <?php if (isset($_GET['table'])) : ?>
+            <?php if (request('table')) : ?>
                 <?php if (count($data['table_contents']) === 0) : ?>
                     <h4>Table doesn't have any content!</h4>
                 <?php else : ?>
@@ -45,6 +46,17 @@
                 <h4 class="p-4">Please select any table to see further informations <i class="far text-warning fa-smile-beam"></i></h4>
             <?php endif; ?>
         </div>
+
+        <div class="row mt-5 d-flex align-items-center justify-content-between">
+            <div class="col-6">
+                <?php require_once app('app_root') . "/resources/views/dashboard/tabs/import.php" ?>
+            </div>
+
+            <div class="col-6">
+                <?php require_once app('app_root') . "/resources/views/dashboard/tabs/export.php" ?>
+            </div>
+
+        </div>
     </div>
 
 
@@ -58,6 +70,7 @@
             paging: false
         });
     });
+
 
     // Custom SQL Queries
     const sqlTabBtn = document.getElementById('sql__tab--btn');

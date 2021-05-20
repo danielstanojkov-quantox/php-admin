@@ -175,9 +175,11 @@ class Database
 
   /**
    * Retrieves table data
-   *
+   *  @param string $database
+   *  @param string $tableName
+   *  @return mixed
    */
-  public function fetchTableContents($database, $tableName)
+  public function fetchTableContents(string $database, string $tableName): mixed
   {
     $statement = self::$pdo->query("USE $database;");
     $statement->execute();
@@ -205,6 +207,25 @@ class Database
     try {
       $statement = self::$pdo->query($sql);
       return $statement->fetchAll(PDO::FETCH_ASSOC);
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+  }
+
+  /**
+   * Import Database
+   *
+   * @param string $database
+   * @param string $sql
+   * @return void
+   */
+  public function import(string $database, string $sql): void
+  {
+    $statement = self::$pdo->query("USE $database;");
+    $statement->execute();
+
+    try {
+      $statement = self::$pdo->query($sql);
     } catch (\Throwable $th) {
       throw $th;
     }
