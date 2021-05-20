@@ -29,7 +29,7 @@ class Export extends Controller
         header("Content-Type: " . $mime);
         header('Content-Disposition: attachment; filename="' . $filename . '"');
 
-        $cmd = "/opt/lampp/bin/mysqldump -u $user $database";
+        $cmd = env('MYSQLDUMP_PATH') . " -u $user $database";
         passthru($cmd);
     }
 }
