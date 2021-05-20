@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Log;
 use App\Helpers\Redirect;
 use App\Helpers\Request;
 use App\Helpers\Session;
@@ -37,8 +38,31 @@ class Users extends Controller
             Session::flash('registration_successfull', 'User has been created successfully');
         } catch (\Throwable $th) {
             Session::flash('registration_failed', $th->getMessage());
+            Log::error($th->getMessage());
         }
 
         Redirect::to($uri);
+    }
+
+    /**
+     * Delete User Account
+     *
+     * @return void
+     */
+    public function delete()
+    {
+        $account = Request::input('account');
+
+        $db = Database::getInstance();
+
+        try {
+            $db->deleteUser($account);
+            Session::flash('user_deleted_success', 'User account has been removed successfully');
+        } catch (\Throwable $th) {
+            Session::flash('user_deleted_error', $th->getMessage());
+            Log::error($th->getMessage());
+        }
+
+        Redirect::to('/dashboard');
     }
 }

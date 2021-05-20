@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Log;
 use App\Helpers\Request;
 use App\Libraries\Controller;
 use App\Libraries\Database;
@@ -22,6 +23,7 @@ class Api extends Controller
         } catch (\Throwable $th) {
             header('HTTP/1.1 500 Internal Server Error');
             header('Content-Type: application/json; charset=UTF-8');
+            Log::error($th->getMessage());
             die(json_encode(array('message' => $th->getMessage(), 'code' => 500)));
         }
     }

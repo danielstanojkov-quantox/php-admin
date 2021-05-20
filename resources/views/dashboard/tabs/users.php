@@ -1,5 +1,13 @@
 <div id="users__tab" class="d-none text-dark">
     <div class="users__tab content p-4">
+
+        <?php if (sessionExists('user_deleted_success')) : ?>
+            <div class="alert alert-success text-dark"><?= session('user_deleted_success') ?></div>
+        <?php endif; ?>
+        <?php if (sessionExists('user_deleted_error')) : ?>
+            <div class="alert alert-danger text-dark"><?= session('user_deleted_error') ?></div>
+        <?php endif; ?>
+
         <table class="table table-warning">
             <thead class="thead-dark">
                 <tr>
@@ -13,7 +21,14 @@
             <tbody>
                 <?php foreach ($data['accounts'] as $account) : ?>
                     <tr>
-                        <td></td>
+                        <td>
+                            <form action="<?= app('url_root') ?>/Users/delete" method="post">
+                                <input type="hidden" name="account" value="<?= $account['user'] ?>@<?= $account['host'] ?>">
+                                <button type="submit" class="btn btn-transparent">
+                                    <i class="fas fa-times text-danger"></i>
+                                </button>
+                            </form>
+                        </td>
                         <td><?= $account['user'] === '' ? 'Any' : $account['user']; ?></td>
                         <td><?= $account['host']; ?></td>
                         <td class="<?= trim($account['authentication_string']) ? '' : 'text-danger'; ?>">

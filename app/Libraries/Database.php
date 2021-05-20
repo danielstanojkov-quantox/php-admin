@@ -282,4 +282,19 @@ class Database
       throw $th;
     }
   }
+
+  /**
+   * Delete User account from the server
+   *
+   * @param string $user
+   * @return void
+   */
+  public function deleteUser(string $user): void
+  {
+    try {
+      self::$pdo->query("DROP USER $user;");
+    } catch (\Throwable $th) {
+      throw $th;
+    }
+  }
 }

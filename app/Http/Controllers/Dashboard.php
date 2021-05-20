@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Auth;
+use App\Helpers\Log;
 use App\Helpers\Redirect;
 use App\Helpers\Request;
 use App\Helpers\Session;
 use App\Http\Middleware\IsAuthenticatedMiddleware;
 use App\Libraries\Controller;
 use App\Libraries\Database;
+
 
 class Dashboard extends Controller
 {
@@ -155,6 +157,7 @@ class Dashboard extends Controller
     } catch (\Throwable $th) {
       Session::flash('db_creation_error', $th->getMessage());
       Session::flash('dbName', $dbName);
+      Log::error($th->getMessage());
       Redirect::to('/dashboard');
     }
   }

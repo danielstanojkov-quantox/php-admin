@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\File;
+use App\Helpers\Log;
 use App\Helpers\Redirect;
 use App\Helpers\Request;
 use App\Helpers\Session;
@@ -39,6 +40,7 @@ class Import extends Controller
             $db->import($dbName, $sql);
             Session::flash('import__success', "Your database has been imported successfully.");
         } catch (\Throwable $th) {
+            Log::error($th->getMessage());
             Session::flash('import__error', $th->getMessage());
         }
 

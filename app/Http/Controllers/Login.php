@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Cookie;
+use App\Helpers\Log;
 use App\Helpers\Redirect;
 use App\Helpers\Request;
 use App\Helpers\Session;
@@ -48,6 +49,7 @@ class Login extends Controller
             Session::flash('host', $credentials['host']);
             Session::flash('username', $credentials['username']);
 
+            Log::error($e->getMessage());
             Redirect::to('/login');
         }
 
