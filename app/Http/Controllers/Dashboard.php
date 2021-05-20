@@ -56,8 +56,6 @@ class Dashboard extends Controller
       'accounts' => $this->getUsers()
     ];
 
-    // var_dump($data['accounts']);
-    // die;
     return $data;
   }
 

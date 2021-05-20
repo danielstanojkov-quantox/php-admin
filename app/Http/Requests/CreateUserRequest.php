@@ -27,7 +27,7 @@ class CreateUserRequest
             return false;
         }
 
-        if (is_null($role)) {
+        if (!$role) {
             Session::flash('registration_failed', 'Please select a role');
             return false;
         }
