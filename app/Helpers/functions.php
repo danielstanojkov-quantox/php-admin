@@ -1,6 +1,6 @@
 <?php
 
-use function DI\string;
+use App\Helpers\Request;
 
 /**
  * Session flush message helper 
@@ -60,8 +60,37 @@ function env(string $key): mixed
     return $string;
 }
 
-function app($key)
+/**
+ * Get full url
+ *
+ * @return string
+ */
+function fullUrl()
+{
+    $domain = $_SERVER['HTTP_HOST'];
+
+    return "http://" . $domain . $_SERVER['REQUEST_URI'];
+}
+
+/**
+ * Retrieve configuration variable
+ *
+ * @param string $key
+ * @return string
+ */
+function app(string $key): string
 {
     $configurations = require(dirname(__DIR__, 2) . '/config/app.php');
     return $configurations[$key];
+}
+
+/**
+ * Return value from the request
+ *
+ * @param string $key
+ * @return mixed
+ */
+function request(string $key): mixed
+{
+    return Request::input($key);
 }

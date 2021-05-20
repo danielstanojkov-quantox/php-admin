@@ -38,7 +38,7 @@ class Cookie
         bool $secure = false,
         bool $httponly = false
     ): void {
-        $expires = Carbon::now()->timestamp + (app('EXPIRATION_TIME') * 60);
+        $expires = Carbon::now()->timestamp + (app('expiration_time') * 60);
         $value = Hash::encrypt($value);
         setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
     }

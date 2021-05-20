@@ -27,9 +27,9 @@ class Request
     /**
      * Get data from the request
      *
-     * @return array
+     * @return mixed
      */
-    public static function all(): array
+    public static function all(): mixed
     {
         switch (Server::method()) {
             case 'POST':
@@ -51,5 +51,37 @@ class Request
     public static function input(string $field): mixed
     {
         return static::all()[$field] ?? null;
+    }
+
+    /**
+     *  Check if the request has ceratin parameter
+     *
+     * @return bool
+     */
+    public static function has($parameter): bool
+    {
+        return key_exists($parameter, static::all() ?? []);
+    }
+
+    /**
+     * Return uploaded file
+     *
+     * @param string $filename
+     * @return array
+     */
+    public static function file(string $filename): array
+    {
+        return $_FILES[$filename];
+    }
+
+    /**
+     * Check if file is being uploaded
+     *
+     * @param string $filename
+     * @return bool
+     */
+    public static function fileExists(string $filename): bool
+    {
+        return isset($_FILES[$filename]);
     }
 }
