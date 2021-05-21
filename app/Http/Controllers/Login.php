@@ -15,6 +15,49 @@ use App\Http\Middleware\IsAuthenticatedMiddleware;
 class Login extends Controller
 {
     /**
+     * @var Redirect $redirect;
+     */
+    private $redirect;
+
+    /**
+     * @var Request $request;
+     */
+    private $request;
+
+    /**
+     * @var Log $logger;
+     */
+    private $logger;
+
+    /**
+     * @var Session $session;
+     */
+    private $session;
+
+    /**
+     * @var Cookie $cookie;
+     */
+    private $cookie;
+
+    /**
+     * Login Constructor
+     *
+     * @param Redirect $redirect
+     * @param Request $request
+     * @param Log $logger
+     * @param Session $session
+     * @param Cookie $cookie
+     */
+    public function __construct(Redirect $redirect, Request $request, Log $logger, Session $session, Cookie $cookie)
+    {
+        $this->redirect = $redirect;
+        $this->request = $request;
+        $this->logger = $logger;
+        $this->session = $session;
+        $this->cookie = $cookie;
+    }
+
+    /**
      * Displays login view
      *
      * @return mixed
@@ -22,10 +65,10 @@ class Login extends Controller
     public function index(): mixed
     {
         if (IsAuthenticatedMiddleware::handle()) {
-            Redirect::to('/dashboard');
+            $this->redirect->to('/dashboard');
         }
 
-        if (Request::isPost()) {
+        if ($this->request->isPost()) {
             return $this->login('a');
         }
 
@@ -39,25 +82,25 @@ class Login extends Controller
      */
     public function login(): void
     {
-        $credentials = Request::all();
+        $credentials = $this->request->all();
 
         try {
             Database::getInstance($credentials);
-            Log::info("User " . $credentials['username'] . " has been logged in.");
+            $this->logger->info("User " . $credentials['username'] . " has been logged in.");
         } catch (\Throwable $e) {
 
-            Session::flash('login_failed', $e->getMessage());
-            Session::flash('host', $credentials['host']);
-            Session::flash('username', $credentials['username']);
+            $this->session->flash('login_failed', $e->getMessage());
+            $this->session->flash('host', $credentials['host']);
+            $this->session->flash('username', $credentials['username']);
 
-            Log::error($e->getMessage());
-            Redirect::to('/login');
+            $this->logger->error($e->getMessage());
+            $this->redirect->to('/login');
         }
 
         $user = new User($credentials);
         $user = $user->save();
 
-        Cookie::set('user_id', $user['id']);
-        Redirect::to('/dashboard');
+        $this->cookie->set('user_id', $user['id']);
+        $this->redirect->to('/dashboard');
     }
 }

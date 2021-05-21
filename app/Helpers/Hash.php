@@ -12,7 +12,7 @@ class Hash
      * @param string $pure_string
      * @return string
      */
-    public static function encrypt(string $pureString): string
+    public function encrypt(string $pureString): string
     {
         $encryptionKey = env('APP_KEY');
         if (!$encryptionKey) throw new Exception("APP_KEY must be set.");
@@ -32,7 +32,7 @@ class Hash
      * @param string $pure_string
      * @return mixed
      */
-    public static function decrypt(string $encryptedString): mixed
+    public function decrypt(string $encryptedString): mixed
     {
         $encryptionKey = env('APP_KEY');
         if (!$encryptionKey) throw new Exception("APP_KEY must be set.");
@@ -51,7 +51,7 @@ class Hash
                 return $originalPlaintext;
             }
         } else {
-            if (static::hashEqualsCustom($hmac, $calcmac)) {
+            if ($this->hashEqualsCustom($hmac, $calcmac)) {
                 return $originalPlaintext;
             }
         }
@@ -66,7 +66,7 @@ class Hash
      * @param string $userString
      * @return bool
      */
-    private static function hashEqualsCustom(string $knownString, string $userString): bool
+    private function hashEqualsCustom(string $knownString, string $userString): bool
     {
         if (function_exists('mb_strlen')) {
             $kLen = mb_strlen($knownString, '8bit');

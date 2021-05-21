@@ -14,37 +14,85 @@ use App\Libraries\Database;
 class Import extends Controller
 {
     /**
+     *
+     * @var Request $request
+     */
+    private $request;
+
+    /**
+     *
+     * @var Redirect $redirect
+     */
+    private $redirect;
+
+    /**
+     *
+     * @var Log $logger
+     */
+    private $logger;
+
+    /**
+     *
+     * @var Session $session
+     */
+    private $session;
+
+    /**
+     *
+     * @var File $file
+     */
+    private $file;
+
+    /**
+     * Import Constructor
+     *
+     * @param Request $request
+     * @param Redirect $redirect
+     * @param File $file
+     * @param Log $logger
+     * @param Session $session
+     */
+    public function __construct(Request $request, Redirect $redirect, File $file, Log $logger, Session $session)
+    {
+        $this->request = $request;
+        $this->redirect = $redirect;
+        $this->file = $file;
+        $this->logger = $logger;
+        $this->session = $session;
+    }
+
+    /**
      * Handles importing databases with sql files
      *
      * @return void
      */
     public function index(): void
     {
-        if (!Request::isPost()) {
-            Redirect::to('/dashboard');
+        if (!$this->request->isPost()) {
+            $this->redirect->to('/dashboard');
         }
 
-        $dbName = Request::input('db_name');
-        $file = Request::file('sql_file');
+        $dbName = $this->request->input('db_name');
+        $file = $this->request->file('sql_file');
 
         $uri = $dbName ? "/dashboard?db_name=$dbName" : '/dashboard';
 
         if (!ImportFileRequest::validate($dbName, $file)) {
-            Redirect::to($uri);
+            $this->redirect->to($uri);
         }
 
-        $sql = File::get($file['tmp_name']);
+        $sql = $this->file->get($file['tmp_name']);
         $db = Database::getInstance();
 
         try {
             $db->import($dbName, $sql);
-            Log::info("Database $dbName has been imported successfully");
-            Session::flash('import__success', "Your database has been imported successfully.");
+            $this->logger->info("Database $dbName has been imported successfully");
+            $this->session->flash('import__success', "Your database has been imported successfully.");
         } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-            Session::flash('import__error', $th->getMessage());
+            $this->logger->error($th->getMessage());
+            $this->session->flash('import__error', $th->getMessage());
         }
 
-        Redirect::to($uri);
+        $this->redirect->to($uri);
     }
 }

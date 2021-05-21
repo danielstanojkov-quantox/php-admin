@@ -7,13 +7,28 @@ use App\Helpers\Cookie;
 class IsAuthenticatedMiddleware
 {
     /**
+     *
+     * @var Cookie $cookie
+     */
+    private $cookie;
+
+    /**
+     *
+     * @param Cookie $cookie
+     */
+    public function __construct(Cookie $cookie)
+    {
+        $this->cookie = $cookie;
+    }
+
+    /**
      * Allow access if the user is authenticated
      *
      * @param  $request
      * @return bool
      */
-    public static function handle(): bool
+    public function handle(): bool
     {
-        return Cookie::exists('user_id');
+        return $this->cookie->exists('user_id');
     }
 }

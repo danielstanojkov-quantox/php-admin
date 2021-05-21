@@ -10,7 +10,7 @@ class File
      * @param string $filename
      * @return string
      */
-    public static function get(string $filename): string
+    public function get(string $filename): string
     {
         return file_get_contents($filename);
     }
@@ -22,7 +22,7 @@ class File
      * @param string $data
      * @return bool
      */
-    public static function put(string $filename, string $data): bool
+    public function put(string $filename, string $data): bool
     {
         return file_put_contents($filename, $data);
     }
@@ -33,7 +33,7 @@ class File
      * @param string $filename
      * @return bool
      */
-    public static function exists(string $filename): bool
+    public function exists(string $filename): bool
     {
         return file_exists($filename);
     }
@@ -44,7 +44,7 @@ class File
      * @param string $dirname
      * @return void
      */
-    public static function makeDirectory(string $dirname): void
+    public function makeDirectory(string $dirname): void
     {
         mkdir(app('app_root') . "/$dirname");
     }
@@ -56,7 +56,7 @@ class File
      * @param string $content
      * @return void
      */
-    public static function makeFile(string $filename, string $content): void
+    public function makeFile(string $filename, string $content): void
     {
         $file = fopen(app('app_root') . "/$filename", "w");
         fwrite($file, $content);

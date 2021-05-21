@@ -9,7 +9,7 @@ class Server
      *
      * @return string
      */
-    public static function method(): string
+    public function method(): string
     {
         return $_SERVER['REQUEST_METHOD'];
     }
@@ -19,7 +19,7 @@ class Server
      *
      * @return array
      */
-    public static function getRequest(): array
+    public function getRequest(): array
     {
         return $_SERVER;
     }
@@ -29,7 +29,7 @@ class Server
      *
      * @return string
      */
-    public static function fullUrl(): string
+    public function fullUrl(): string
     {
         return fullUrl();
     }

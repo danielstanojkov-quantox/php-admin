@@ -5,14 +5,36 @@ namespace App\Helpers;
 class UserStorage
 {
     /**
+     *
+     * @var File $file
+     */
+    private $file;
+
+    /**
+     *
+     * @var Hash $hash
+     */
+    private $hash;
+    /**
+     * UserStorage constructor
+     *
+     * @param File $file
+     * @param Hash $hash
+     */
+    public function __construct(File $file, Hash $hash)
+    {
+        $this->file = $file;
+        $this->hash = $hash;
+    }
+    /**
      * Creates storage folder for users on server
      *
      * @return void
      */
-    public static function makeStorageFolder(): void
+    public function makeStorageFolder(): void
     {
-        File::makeDirectory('storage');
-        File::makeFile('storage/users.json', '');
+        $this->file->makeDirectory('storage');
+        $this->file->makeFile('storage/users.json', '');
     }
 
     /**
@@ -21,16 +43,16 @@ class UserStorage
      * @param array $user
      * @return void
      */
-    public static function add(array $user): void
+    public function add(array $user): void
     {
-        if (!File::exists(app('users'))) {
-            static::makeStorageFolder();
+        if (!$this->file->exists(app('users'))) {
+            $this->makeStorageFolder();
         }
 
-        $users = static::getUsers() ?? [];
+        $users = $this->getUsers() ?? [];
         array_push($users, $user);
 
-        static::setUsers($users);
+        $this->setUsers($users);
     }
 
     /**
@@ -39,15 +61,15 @@ class UserStorage
      * @param string $id
      * @return void
      */
-    public static function removeUserById(string $id): void
+    public function removeUserById(string $id): void
     {
-        $users = static::getUsers();
+        $users = $this->getUsers();
 
         $users = array_filter($users, function ($user) use ($id) {
             return $user->id !== (int) $id;
         });
 
-        static::setUsers($users);
+        $this->setUsers($users);
     }
 
     /**
@@ -56,9 +78,9 @@ class UserStorage
      * @param string $id
      * @return mixed
      */
-    public static function getUserById(string $id): mixed
+    public function getUserById(string $id): mixed
     {
-        $users = static::getUsers();
+        $users = $this->getUsers();
 
         $users = array_filter($users, function ($user) use ($id) {
             return ((int)$user->id) === ((int) $id);
@@ -72,10 +94,10 @@ class UserStorage
      *
      * @return mixed
      */
-    public static function getUsers(): mixed
+    public function getUsers(): mixed
     {
         return json_decode(
-            Hash::decrypt(File::get(app('users')))
+            $this->hash->decrypt($this->file->get(app('users')))
         );
     }
 
@@ -85,11 +107,11 @@ class UserStorage
      * @param array $users
      * @return void
      */
-    public static function setUsers(array $users): void
+    public function setUsers(array $users): void
     {
-        File::put(
+        $this->file->put(
             app('users'),
-            Hash::encrypt(json_encode($users))
+            $this->hash->encrypt(json_encode($users))
         );
     }
 }

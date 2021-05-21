@@ -9,12 +9,36 @@ use App\Libraries\Database;
 
 class Api extends Controller
 {
+    /**
+     *
+     * @var Request $request
+     */
+    private $request;
+
+    /**
+     *
+     * @var Log $logger
+     */
+    private $logger;
+
+    /**
+     * Api Contructor
+     *
+     * @param Request $request
+     * @param Log $logger
+     */
+    public function __construct(Request $request, Log $logger)
+    {
+        $this->request = $request;
+        $this->logger = $logger;
+    }
+
     public function results()
     {
         $db = Database::getInstance();
 
-        $db_name = Request::input('db_name');
-        $sql = Request::input('query');
+        $db_name = $this->request->input('db_name');
+        $sql = $this->request->input('query');
 
         try {
             $results = $db->sql($db_name, $sql);
@@ -23,7 +47,7 @@ class Api extends Controller
         } catch (\Throwable $th) {
             header('HTTP/1.1 500 Internal Server Error');
             header('Content-Type: application/json; charset=UTF-8');
-            Log::error($th->getMessage());
+            $this->logger->error($th->getMessage());
             die(json_encode(['message' => $th->getMessage(), 'code' => 500]));
         }
     }

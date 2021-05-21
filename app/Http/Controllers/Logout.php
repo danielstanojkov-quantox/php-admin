@@ -11,6 +11,35 @@ use App\Libraries\Controller;
 class Logout extends Controller
 {
     /**
+     * @var Redirect $redirect;
+     */
+    private $redirect;
+
+    /**
+     * @var UserStorage $storage;
+     */
+    private $storage;
+
+    /**
+     * @var Cookie $cookie;
+     */
+    private $cookie;
+
+    /**
+     * Dashboard Constructor
+     *
+     * @param Redirect $redirect
+     * @param UserStorage $storage
+     * @param Cookie $cookie
+     */
+    public function __construct(Redirect $redirect, UserStorage $storage, Cookie $cookie)
+    {
+        $this->redirect = $redirect;
+        $this->storage = $storage;
+        $this->cookie = $cookie;
+    }
+
+    /**
      * Logout the authenticated user
      *
      * @return void
@@ -18,10 +47,10 @@ class Logout extends Controller
     public function index(): void
     {
         if (IsAuthenticatedMiddleware::handle()) {
-            UserStorage::removeUserById(Cookie::get('user_id'));
-            Cookie::remove('user_id');
+            $this->storage->removeUserById($this->cookie->get('user_id'));
+            $this->cookie->remove('user_id');
         }
 
-        Redirect::to('/login');
+        $this->redirect->to('/login');
     }
 }

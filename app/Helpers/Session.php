@@ -9,7 +9,7 @@ class Session
      *
      * @return void
      */
-    public static function start(): void
+    public function start(): void
     {
         session_start();
     }
@@ -19,7 +19,7 @@ class Session
      *
      * @return void
      */
-    public static function destroy(): void
+    public function destroy(): void
     {
         session_destroy();
     }
@@ -30,7 +30,7 @@ class Session
      * @param string $name
      * @return void
      */
-    public static function exists(string $name): void
+    public function exists(string $name): void
     {
         sessionExists($name);
     }
@@ -42,7 +42,7 @@ class Session
      * @param string $message
      * @return void
      */
-    public static function flash(string $name = "", string $message = ""): void
+    public function flash(string $name = "", string $message = ""): void
     {
         session($name, $message);
     }

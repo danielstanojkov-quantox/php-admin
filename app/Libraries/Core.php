@@ -2,6 +2,8 @@
 
 namespace App\Libraries;
 
+use DI\ContainerBuilder;
+
 /*
 * Creates URL & loads core controller
 * URL FORMAT - /controller/method/params
@@ -42,8 +44,11 @@ class Core
       unset($url[0]);
     }
 
+    $builder = new ContainerBuilder();
+    $container = $builder->build();
+
     $class = "App\Http\Controllers\\" . $this->currentController;
-    $this->currentController = new $class;
+    $this->currentController = $container->get($class);
 
     if (isset($url[1])) {
       if (method_exists($this->currentController, $url[1])) {

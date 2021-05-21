@@ -13,36 +13,72 @@ use App\Libraries\Database;
 class Users extends Controller
 {
     /**
+     * @var Request $request;
+     */
+    private $request;
+
+    /**
+     * @var Redirect $redirect;
+     */
+    private $redirect;
+
+    /**
+     * @var Session $session;
+     */
+    private $session;
+
+    /**
+     * @var Log $logger;
+     */
+    private $logger;
+
+    /**
+     * Users Constructor
+     *
+     * @param Request $request
+     * @param Redirect $redirect
+     * @param Session $session
+     * @param Log $logger
+     */
+    public function __construct(Request $request, Redirect $redirect, Session $session, Log $logger)
+    {
+        $this->request = $request;
+        $this->redirect = $redirect;
+        $this->session = $session;
+        $this->logger = $logger;
+    }
+
+    /**
      * Handles creating new user accounts
      *
      * @return void
      */
     public function store(): void
     {
-        $username = Request::input('username');
-        $password = Request::input('password');
-        $role = Request::input('role');
+        $username = $this->request->input('username');
+        $password = $this->request->input('password');
+        $role = $this->request->input('role');
 
-        $dbName = Request::input('db_name');
+        $dbName = $this->request->input('db_name');
         $uri = $dbName ? "/dashboard?db_name=$dbName" : '/dashboard';
 
         if (!CreateUserRequest::validate($role, $username)) {
-            Session::flash('account_username', $username);
-            Redirect::to($uri);
+            $this->session->flash('account_username', $username);
+            $this->redirect->to($uri);
         }
 
         $db = Database::getInstance();
 
         try {
             $db->createUser(app('host'), $username, $password, $role);
-            Log::info("Account $username@" . app('host') . " created successfuly");
-            Session::flash('registration_successfull', 'User has been created successfully');
+            $this->logger->info("Account $username@" . app('host') . " created successfuly");
+            $this->session->flash('registration_successfull', 'User has been created successfully');
         } catch (\Throwable $th) {
-            Session::flash('registration_failed', $th->getMessage());
-            Log::error($th->getMessage());
+            $this->session->flash('registration_failed', $th->getMessage());
+            $this->logger->error($th->getMessage());
         }
 
-        Redirect::to($uri);
+        $this->redirect->to($uri);
     }
 
     /**
@@ -52,19 +88,19 @@ class Users extends Controller
      */
     public function delete()
     {
-        $account = Request::input('account');
+        $account = $this->request->input('account');
 
         $db = Database::getInstance();
 
         try {
             $db->deleteUser($account);
-            Session::flash('user_deleted_success', 'User account has been removed successfully');
-            Log::info("Account $account deleted successfuly");
+            $this->session->flash('user_deleted_success', 'User account has been removed successfully');
+            $this->logger->info("Account $account deleted successfuly");
         } catch (\Throwable $th) {
-            Session::flash('user_deleted_error', $th->getMessage());
-            Log::error($th->getMessage());
+            $this->session->flash('user_deleted_error', $th->getMessage());
+            $this->logger->error($th->getMessage());
         }
 
-        Redirect::to('/dashboard');
+        $this->redirect->to('/dashboard');
     }
 }

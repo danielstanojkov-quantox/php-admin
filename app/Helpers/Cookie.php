@@ -7,14 +7,30 @@ use Carbon\Carbon;
 class Cookie
 {
     /**
+     *
+     * @var Hash $hash
+     */
+    private $hash;
+
+    /**
+     * Cookie Constructor
+     *
+     * @param Hash $hash
+     */
+    public function __construct(Hash $hash)
+    {
+        $this->hash = $hash;
+    }
+
+    /**
      * Returns the value of a cookie
      *
      * @param string $name
      * @return string
      */
-    public static function get(string $name): string
+    public function get(string $name): string
     {
-        return Hash::decrypt($_COOKIE[$name]);
+        return $this->hash->decrypt($_COOKIE[$name]);
     }
 
     /**
@@ -29,7 +45,7 @@ class Cookie
      * @param bool $httponly
      * @return void
      */
-    public static function set(
+    public function set(
         string $name,
         string $value = '',
         int $expires = null,
@@ -39,7 +55,7 @@ class Cookie
         bool $httponly = false
     ): void {
         $expires = Carbon::now()->timestamp + (app('expiration_time') * 60);
-        $value = Hash::encrypt($value);
+        $value = $this->hash->encrypt($value);
         setcookie($name, $value, $expires, $path, $domain, $secure, $httponly);
     }
 
@@ -49,7 +65,7 @@ class Cookie
      * @param string $name
      * @return bool
      */
-    public static function exists(string $name): bool
+    public function exists(string $name): bool
     {
         return isset($_COOKIE[$name]);
     }
@@ -60,7 +76,7 @@ class Cookie
      * @param string $name
      * @return bool
      */
-    public static function remove(string $name): bool
+    public function remove(string $name): bool
     {
         return setcookie($name, '', time() - 3600, '/');
     }
