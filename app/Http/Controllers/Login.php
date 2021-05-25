@@ -40,6 +40,16 @@ class Login extends Controller
     private $cookie;
 
     /**
+     * @var Database $database;
+     */
+    private $database;
+
+    /**
+     * @var User $user;
+     */
+    private $user;
+
+    /**
      * Login Constructor
      *
      * @param Redirect $redirect
@@ -47,14 +57,25 @@ class Login extends Controller
      * @param Log $logger
      * @param Session $session
      * @param Cookie $cookie
+     * @param Database $database
+     * @param User $user
      */
-    public function __construct(Redirect $redirect, Request $request, Log $logger, Session $session, Cookie $cookie)
-    {
+    public function __construct(
+        Redirect $redirect,
+        Request $request,
+        Log $logger,
+        Session $session,
+        Cookie $cookie,
+        Database $database,
+        User $user
+    ) {
         $this->redirect = $redirect;
         $this->request = $request;
         $this->logger = $logger;
         $this->session = $session;
         $this->cookie = $cookie;
+        $this->database = $database;
+        $this->user = $user;
     }
 
     /**
@@ -85,7 +106,7 @@ class Login extends Controller
         $credentials = $this->request->all();
 
         try {
-            Database::getInstance($credentials);
+            $this->database->connect($credentials);
             $this->logger->info("User " . $credentials['username'] . " has been logged in.");
         } catch (\Throwable $e) {
 
@@ -97,8 +118,7 @@ class Login extends Controller
             $this->redirect->to('/login');
         }
 
-        $user = new User($credentials);
-        $user = $user->save();
+        $user = $this->user->save($credentials);
 
         $this->cookie->set('user_id', $user['id']);
         $this->redirect->to('/dashboard');

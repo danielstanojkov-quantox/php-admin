@@ -40,9 +40,9 @@ class Dashboard extends Controller
   private $session;
 
   /**
-   * @var IsAuthenticatedMiddleware $middleware;
+   * @var Database $database;
    */
-  private $middleware;
+  private $database;
 
   /**
    * Dashboard Constructor
@@ -52,7 +52,7 @@ class Dashboard extends Controller
    * @param Auth $auth
    * @param Log $logger
    * @param Session $session
-   * @param IsAuthenticatedMiddleware $middleware
+   * @param Database $database
    */
   public function __construct(
     Redirect $redirect,
@@ -60,14 +60,14 @@ class Dashboard extends Controller
     Auth $auth,
     Log $logger,
     Session $session,
-    IsAuthenticatedMiddleware $middleware
+    Database $database
   ) {
     $this->redirect = $redirect;
     $this->request = $request;
     $this->auth = $auth;
     $this->logger = $logger;
     $this->session = $session;
-    $this->middleware = $middleware;
+    $this->database = $database;
   }
 
   /**
@@ -77,7 +77,7 @@ class Dashboard extends Controller
    */
   public function index(): void
   {
-    if (!$this->middleware->handle()) {
+    if (!IsAuthenticatedMiddleware::handle()) {
       $this->redirect->to('/login');
     }
 
@@ -95,11 +95,10 @@ class Dashboard extends Controller
    */
   protected function getSidebarData(): array
   {
-    $db = Database::getInstance();
-
     try {
-      $tables = $db->getTables();
+      $tables = $this->database->getTables();
     } catch (\Throwable $th) {
+
       session('db_error', $th->getMessage());
       $this->redirect->to('/dashboard');
     }
@@ -107,7 +106,7 @@ class Dashboard extends Controller
     $data =  [
       'host' => $this->auth->host(),
       'username' => $this->auth->username(),
-      'databases' => $db->allDatabaseNames(),
+      'databases' => $this->database->allDatabaseNames(),
       'tables' => $tables,
       'accounts' => $this->getUsers()
     ];
@@ -122,9 +121,8 @@ class Dashboard extends Controller
    */
   public function getUsers(): array
   {
-    $db = Database::getInstance();
     try {
-      $users = $db->getAccounts();
+      $users = $this->database->getAccounts();
     } catch (\Throwable $th) {
       $users = [];
     }
@@ -138,14 +136,12 @@ class Dashboard extends Controller
    */
   protected function getTableContent(): mixed
   {
-    $db = Database::getInstance();
-
     if (!$this->request->has('table')) {
       return null;
     }
 
     try {
-      return  $db->fetchTableContents(
+      return $this->database->fetchTableContents(
         $this->request->input('db_name'),
         $this->request->input('table')
       );
@@ -162,8 +158,7 @@ class Dashboard extends Controller
    */
   public function getEncodingTypes(): array
   {
-    $db = Database::getInstance();
-    $collations = $db->getCollations();
+    $collations = $this->database->getCollations();
 
     $encodingTypes = [];
 
@@ -202,10 +197,8 @@ class Dashboard extends Controller
     $charset = $encodingTypesArray[0];
     $collation = $encodingTypesArray[1];
 
-    $db = Database::getInstance();
-
     try {
-      $db->createDatabase($dbName, $charset, $collation);
+      $this->database->createDatabase($dbName, $charset, $collation);
       $this->session->flash('db_creation_success', 'Database created successfully');
       $this->logger->info("Database $dbName created successfully");
       $this->redirect->to('/dashboard');

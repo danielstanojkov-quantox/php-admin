@@ -22,26 +22,32 @@ class Api extends Controller
     private $logger;
 
     /**
+     *
+     * @var Database $database
+     */
+    private $database;
+
+    /**
      * Api Contructor
      *
      * @param Request $request
      * @param Log $logger
+     * @param Database $database
      */
-    public function __construct(Request $request, Log $logger)
+    public function __construct(Request $request, Log $logger, Database $database)
     {
         $this->request = $request;
         $this->logger = $logger;
+        $this->database = $database;
     }
 
     public function results()
     {
-        $db = Database::getInstance();
-
         $db_name = $this->request->input('db_name');
         $sql = $this->request->input('query');
 
         try {
-            $results = $db->sql($db_name, $sql);
+            $results = $this->database->sql($db_name, $sql);
             header('Content-Type: application/json');
             print json_encode($results);
         } catch (\Throwable $th) {

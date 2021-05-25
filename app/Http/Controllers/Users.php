@@ -33,19 +33,33 @@ class Users extends Controller
     private $logger;
 
     /**
+     * @var Database $database;
+     */
+    private $database;
+
+    /**
+     * @var CreateUsersRequest $usersRequest;
+     */
+    private $usersRequest;
+
+    /**
      * Users Constructor
      *
      * @param Request $request
      * @param Redirect $redirect
      * @param Session $session
      * @param Log $logger
+     * @param Database $database
+     * @param CreateUsersRequest $usersRequest
      */
-    public function __construct(Request $request, Redirect $redirect, Session $session, Log $logger)
+    public function __construct(Request $request, Redirect $redirect, Session $session, Log $logger, Database $database, CreateUserRequest $usersRequest)
     {
         $this->request = $request;
         $this->redirect = $redirect;
         $this->session = $session;
         $this->logger = $logger;
+        $this->database = $database;
+        $this->usersRequest = $usersRequest;
     }
 
     /**
@@ -62,15 +76,13 @@ class Users extends Controller
         $dbName = $this->request->input('db_name');
         $uri = $dbName ? "/dashboard?db_name=$dbName" : '/dashboard';
 
-        if (!CreateUserRequest::validate($role, $username)) {
+        if (!$this->usersRequest->validate($role, $username)) {
             $this->session->flash('account_username', $username);
             $this->redirect->to($uri);
         }
 
-        $db = Database::getInstance();
-
         try {
-            $db->createUser(app('host'), $username, $password, $role);
+            $this->database->createUser(app('host'), $username, $password, $role);
             $this->logger->info("Account $username@" . app('host') . " created successfuly");
             $this->session->flash('registration_successfull', 'User has been created successfully');
         } catch (\Throwable $th) {
@@ -90,10 +102,8 @@ class Users extends Controller
     {
         $account = $this->request->input('account');
 
-        $db = Database::getInstance();
-
         try {
-            $db->deleteUser($account);
+            $this->database->deleteUser($account);
             $this->session->flash('user_deleted_success', 'User account has been removed successfully');
             $this->logger->info("Account $account deleted successfuly");
         } catch (\Throwable $th) {

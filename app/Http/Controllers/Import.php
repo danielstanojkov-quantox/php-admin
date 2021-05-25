@@ -44,6 +44,18 @@ class Import extends Controller
     private $file;
 
     /**
+     *
+     * @var Database $database
+     */
+    private $database;
+
+    /**
+     *
+     * @var ImportFileRequest $importRequest
+     */
+    private $importRequest;
+
+    /**
      * Import Constructor
      *
      * @param Request $request
@@ -51,14 +63,25 @@ class Import extends Controller
      * @param File $file
      * @param Log $logger
      * @param Session $session
+     * @param Database $database
+     * @param ImportFileRequest $importRequest
      */
-    public function __construct(Request $request, Redirect $redirect, File $file, Log $logger, Session $session)
-    {
+    public function __construct(
+        Request $request,
+        Redirect $redirect,
+        File $file,
+        Log $logger,
+        Session $session,
+        Database $database,
+        ImportFileRequest $importRequest
+    ) {
         $this->request = $request;
         $this->redirect = $redirect;
         $this->file = $file;
         $this->logger = $logger;
         $this->session = $session;
+        $this->database = $database;
+        $this->importRequest = $importRequest;
     }
 
     /**
@@ -77,15 +100,14 @@ class Import extends Controller
 
         $uri = $dbName ? "/dashboard?db_name=$dbName" : '/dashboard';
 
-        if (!ImportFileRequest::validate($dbName, $file)) {
+        if (!$this->importRequest->validate($dbName, $file)) {
             $this->redirect->to($uri);
         }
 
         $sql = $this->file->get($file['tmp_name']);
-        $db = Database::getInstance();
 
         try {
-            $db->import($dbName, $sql);
+            $this->database->import($dbName, $sql);
             $this->logger->info("Database $dbName has been imported successfully");
             $this->session->flash('import__success', "Your database has been imported successfully.");
         } catch (\Throwable $th) {

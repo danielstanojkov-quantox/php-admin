@@ -1,7 +1,5 @@
 <?php
 
-use App\Helpers\Request;
-
 /**
  * Session flush message helper 
  *
@@ -92,5 +90,5 @@ function app(string $key): string
  */
 function request(string $key): mixed
 {
-    return Request::input($key);
+    return $_REQUEST[$key] ?? null;
 }
