@@ -38,6 +38,7 @@ class Export extends Controller
         $this->redirect = $redirect;
         $this->authentication = $authentication;
     }
+
     /**
      * Handles exporting databases
      *

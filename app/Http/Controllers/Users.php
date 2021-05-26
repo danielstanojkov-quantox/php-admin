@@ -52,8 +52,14 @@ class Users extends Controller
      * @param Database $database
      * @param CreateUsersRequest $usersRequest
      */
-    public function __construct(Request $request, Redirect $redirect, Session $session, Log $logger, Database $database, CreateUserRequest $usersRequest)
-    {
+    public function __construct(
+        Request $request,
+        Redirect $redirect,
+        Session $session,
+        Log $logger,
+        Database $database,
+        CreateUserRequest $usersRequest
+    ) {
         $this->request = $request;
         $this->redirect = $redirect;
         $this->session = $session;

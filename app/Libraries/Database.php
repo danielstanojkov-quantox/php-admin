@@ -13,12 +13,6 @@ use PDOStatement;
 class Database
 {
   /**
-   * Database Instance
-   *
-   */
-  private $instance = null;
-
-  /**
    * Database Connection
    *
    * @var Pdo
@@ -71,22 +65,21 @@ class Database
 
   public function connect($credentials = null)
   {
-    if(!$credentials && !$this->cookie->exists('user_id')) return;
+    if (!$credentials && !$this->cookie->exists('user_id')) return;
 
     if ($this->cookie->exists('user_id')) {
       $user = $this->storage->getUserById($this->cookie->get('user_id'));
       $credentials = (array) $user;
     }
-  
+
     try {
       $dsn = "mysql:host=" . $credentials['host'];
-      $options = array(
+      $options = [
         PDO::ATTR_PERSISTENT => true,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-      );
+      ];
 
       $this->pdo = new PDO($dsn, $credentials['username'], $credentials['password'], $options);
-      return $this->pdo;
     } catch (PDOException $e) {
       throw $e;
     }
