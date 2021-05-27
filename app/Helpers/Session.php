@@ -42,7 +42,7 @@ class Session
      * @param string $message
      * @return void
      */
-    public function flash(string $name = "", string $message = ""): void
+    public function flash(string $name, string $message = ""): void
     {
         session($name, $message);
     }

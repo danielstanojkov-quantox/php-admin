@@ -11,6 +11,8 @@ use App\Libraries\Controller;
 use App\Libraries\Database;
 use App\Models\User;
 use App\Http\Middleware\IsAuthenticatedMiddleware;
+use App\Exceptions\AuthException;
+use Throwable;
 
 class Login extends Controller
 {
@@ -108,12 +110,12 @@ class Login extends Controller
         try {
             $this->database->connect($credentials);
             $this->logger->info("User " . $credentials['username'] . " has been logged in.");
-        } catch (\Throwable $e) {
-
+        } catch (AuthException $e) {
             $this->session->flash('login_failed', $e->getMessage());
             $this->session->flash('host', $credentials['host']);
             $this->session->flash('username', $credentials['username']);
-
+            $this->redirect->to('/login');
+        } catch (Throwable $e) {
             $this->logger->error($e->getMessage());
             $this->redirect->to('/login');
         }

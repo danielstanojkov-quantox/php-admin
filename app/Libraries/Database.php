@@ -2,12 +2,11 @@
 
 namespace App\Libraries;
 
+use App\Exceptions\AuthException;
 use App\Helpers\Cookie;
 use App\Helpers\Request;
 use App\Helpers\UserStorage;
-use Exception;
 use \Pdo;
-use \PDOException;
 use PDOStatement;
 
 class Database
@@ -72,16 +71,16 @@ class Database
       $credentials = (array) $user;
     }
 
-    try {
-      $dsn = "mysql:host=" . $credentials['host'];
-      $options = [
-        PDO::ATTR_PERSISTENT => true,
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-      ];
+    $dsn = "mysql:host=" . $credentials['host'];
+    $options = [
+      PDO::ATTR_PERSISTENT => true,
+      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    ];
 
+    try {
       $this->pdo = new PDO($dsn, $credentials['username'], $credentials['password'], $options);
-    } catch (PDOException $e) {
-      throw $e;
+    } catch (\Throwable $th) {
+      throw new AuthException($th->getMessage());
     }
   }
 
@@ -104,12 +103,8 @@ class Database
    */
   public function getTablesFromServer(string $databaseName): array
   {
-    try {
-      $statement = $this->pdo->query("SHOW TABLES FROM $databaseName;");
-      return $statement->fetchAll(PDO::FETCH_ASSOC);
-    } catch (\Throwable $th) {
-      throw $th;
-    }
+    $statement = $this->pdo->query("SHOW TABLES FROM $databaseName;");
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -123,18 +118,14 @@ class Database
       return null;
     }
 
-    try {
-      $tables = $this->getTablesFromServer($this->request->input('db_name'));
+    $tables = $this->getTablesFromServer($this->request->input('db_name'));
 
-      $tables = array_map(function ($table) {
-        $table = array_values($table);
-        return array_pop($table);
-      }, $tables);
+    $tables = array_map(function ($table) {
+      $table = array_values($table);
+      return array_pop($table);
+    }, $tables);
 
-      return $tables;
-    } catch (\Throwable $th) {
-      throw $th;
-    }
+    return $tables;
   }
 
   /**
@@ -146,6 +137,7 @@ class Database
   {
     $statement = $this->pdo->query("SHOW CHARSET");
     $statement->execute();
+
     return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 
@@ -158,6 +150,7 @@ class Database
   {
     $statement = $this->pdo->query("SHOW COLLATION;");
     $statement->execute();
+
     return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 
@@ -172,12 +165,7 @@ class Database
   public function createDatabase(string $dbName, string $charset, string $collation): void
   {
     $sql = "CREATE DATABASE $dbName CHARACTER SET $charset COLLATE $collation";
-
-    try {
-      $this->pdo->query($sql);
-    } catch (\Throwable $th) {
-      throw $th;
-    }
+    $this->pdo->query($sql);
   }
 
   /**
@@ -190,13 +178,9 @@ class Database
   {
     $statement = $this->pdo->query("USE $database;");
     $statement->execute();
+    $statement = $this->pdo->query("SELECT * FROM $tableName;");
 
-    try {
-      $statement = $this->pdo->query("SELECT * FROM $tableName;");
-      return $statement->fetchAll(PDO::FETCH_ASSOC);
-    } catch (\Throwable $th) {
-      throw $th;
-    }
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -210,13 +194,9 @@ class Database
   {
     $statement = $this->pdo->query("USE $database;");
     $statement->execute();
+    $statement = $this->pdo->query($sql);
 
-    try {
-      $statement = $this->pdo->query($sql);
-      return $statement->fetchAll(PDO::FETCH_ASSOC);
-    } catch (\Throwable $th) {
-      throw $th;
-    }
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -230,12 +210,7 @@ class Database
   {
     $statement = $this->pdo->query("USE $database;");
     $statement->execute();
-
-    try {
-      $statement = $this->pdo->query($sql);
-    } catch (\Throwable $th) {
-      throw $th;
-    }
+    $statement = $this->pdo->query($sql);
   }
 
   /**
@@ -245,12 +220,8 @@ class Database
    */
   public function getAccounts(): array
   {
-    try {
-      $statement = $this->pdo->query("SELECT user, host, authentication_string, Grant_priv FROM mysql.user;");
-      return $statement->fetchAll(PDO::FETCH_ASSOC);
-    } catch (\Throwable $th) {
-      throw $th;
-    }
+    $statement = $this->pdo->query("SELECT user, host, authentication_string, Grant_priv FROM mysql.user;");
+    return $statement->fetchAll(PDO::FETCH_ASSOC);
   }
 
   /**
@@ -264,29 +235,25 @@ class Database
    */
   public function createUser(string $host, string $username, string $password, string $role): void
   {
-    try {
-      $sql = "CREATE USER '$username'@'$host'";
-      if (!empty($password)) {
-        $sql = $sql . " IDENTIFIED BY '$password'";
-      }
+    $sql = "CREATE USER '$username'@'$host'";
+    if (!empty($password)) {
+      $sql = $sql . " IDENTIFIED BY '$password'";
+    }
 
-      $this->pdo->query($sql);
+    $this->pdo->query($sql);
 
-      switch ($role) {
-        case 'admin':
-          $this->pdo->query("GRANT ALL PRIVILEGES ON *.* TO $username@$host WITH GRANT OPTION;");
-          break;
+    switch ($role) {
+      case 'admin':
+        $this->pdo->query("GRANT ALL PRIVILEGES ON *.* TO $username@$host WITH GRANT OPTION;");
+        break;
 
-        case 'maintainer':
-          $this->pdo->query("GRANT SELECT,INSERT,UPDATE,DELETE ON *.* TO $username@$host;");
-          break;
+      case 'maintainer':
+        $this->pdo->query("GRANT SELECT,INSERT,UPDATE,DELETE ON *.* TO $username@$host;");
+        break;
 
-        case 'basic':
-          $this->pdo->query("GRANT SELECT ON *.* TO $username@$host;");
-          break;
-      }
-    } catch (\Throwable $th) {
-      throw $th;
+      case 'basic':
+        $this->pdo->query("GRANT SELECT ON *.* TO $username@$host;");
+        break;
     }
   }
 
@@ -298,10 +265,6 @@ class Database
    */
   public function deleteUser(string $user): void
   {
-    try {
-      $this->pdo->query("DROP USER $user;");
-    } catch (\Throwable $th) {
-      throw $th;
-    }
+    $this->pdo->query("DROP USER $user;");
   }
 }
