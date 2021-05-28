@@ -2,6 +2,8 @@
 
 namespace App\Libraries;
 
+use App\Helpers\Request;
+use App\Helpers\Server;
 use DI\ContainerBuilder;
 
 /*
@@ -11,6 +13,7 @@ use DI\ContainerBuilder;
 
 class Core
 {
+  public Request $request;
   /**
    * Current Controller
    *
@@ -47,6 +50,7 @@ class Core
     $builder = new ContainerBuilder();
     $container = $builder->build();
 
+    $this->request = $container->get(Request::class);
     $class = "App\Http\Controllers\\" . $this->currentController;
     $this->currentController = $container->get($class);
 
@@ -58,8 +62,11 @@ class Core
     }
 
     $this->params = $url ? array_values($url) : [];
-    
-    call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
+
+    call_user_func_array(
+      [$this->currentController, $this->currentMethod],
+      [$this->request, $this->params]
+    );
   }
 
   /**

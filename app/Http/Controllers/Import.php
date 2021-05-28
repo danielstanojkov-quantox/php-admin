@@ -15,12 +15,6 @@ class Import extends Controller
 {
     /**
      *
-     * @var Request $request
-     */
-    private $request;
-
-    /**
-     *
      * @var Redirect $redirect
      */
     private $redirect;
@@ -58,7 +52,6 @@ class Import extends Controller
     /**
      * Import Constructor
      *
-     * @param Request $request
      * @param Redirect $redirect
      * @param File $file
      * @param Log $logger
@@ -67,7 +60,6 @@ class Import extends Controller
      * @param ImportFileRequest $importRequest
      */
     public function __construct(
-        Request $request,
         Redirect $redirect,
         File $file,
         Log $logger,
@@ -75,7 +67,6 @@ class Import extends Controller
         Database $database,
         ImportFileRequest $importRequest
     ) {
-        $this->request = $request;
         $this->redirect = $redirect;
         $this->file = $file;
         $this->logger = $logger;
@@ -89,14 +80,14 @@ class Import extends Controller
      *
      * @return void
      */
-    public function index(): void
+    public function index(Request $request): void
     {
-        if (!$this->request->isPost()) {
+        if (!$request->isPost()) {
             $this->redirect->to('/dashboard');
         }
 
-        $dbName = $this->request->input('db_name');
-        $file = $this->request->file('sql_file');
+        $dbName = $request->input('db_name');
+        $file = $request->file('sql_file');
 
         $uri = $dbName ? "/dashboard?db_name=$dbName" : '/dashboard';
 

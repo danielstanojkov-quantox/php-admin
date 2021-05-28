@@ -11,12 +11,6 @@ class Export extends Controller
 {
     /**
      *
-     * @var Request $request
-     */
-    private $request;
-
-    /**
-     *
      * @var Redirect $redirect
      */
     private $redirect;
@@ -32,9 +26,8 @@ class Export extends Controller
      *
      * @param Request $request
      */
-    public function __construct(Request $request, Redirect $redirect, Auth $authentication)
+    public function __construct(Redirect $redirect, Auth $authentication)
     {
-        $this->request = $request;
         $this->redirect = $redirect;
         $this->authentication = $authentication;
     }
@@ -44,13 +37,13 @@ class Export extends Controller
      *
      * @return void
      */
-    public function index(): void
+    public function index(Request $request): void
     {
-        if (!$this->request->isPost()) {
+        if (!$request->isPost()) {
             $this->redirect->to('/dashboard');
         }
 
-        $database = $this->request->input('db_name');
+        $database = $request->input('db_name');
         $user = $this->authentication->username();
 
         $filename = "$database.sql";

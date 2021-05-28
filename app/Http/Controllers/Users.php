@@ -13,11 +13,6 @@ use App\Libraries\Database;
 class Users extends Controller
 {
     /**
-     * @var Request $request;
-     */
-    private $request;
-
-    /**
      * @var Redirect $redirect;
      */
     private $redirect;
@@ -45,7 +40,6 @@ class Users extends Controller
     /**
      * Users Constructor
      *
-     * @param Request $request
      * @param Redirect $redirect
      * @param Session $session
      * @param Log $logger
@@ -53,14 +47,12 @@ class Users extends Controller
      * @param CreateUsersRequest $usersRequest
      */
     public function __construct(
-        Request $request,
         Redirect $redirect,
         Session $session,
         Log $logger,
         Database $database,
         CreateUserRequest $usersRequest
     ) {
-        $this->request = $request;
         $this->redirect = $redirect;
         $this->session = $session;
         $this->logger = $logger;
@@ -73,13 +65,13 @@ class Users extends Controller
      *
      * @return void
      */
-    public function store(): void
+    public function store(Request $request): void
     {
-        $username = $this->request->input('username');
-        $password = $this->request->input('password');
-        $role = $this->request->input('role');
+        $username = $request->input('username');
+        $password = $request->input('password');
+        $role = $request->input('role');
 
-        $dbName = $this->request->input('db_name');
+        $dbName = $request->input('db_name');
         $uri = $dbName ? "/dashboard?db_name=$dbName" : '/dashboard';
 
         if (!$this->usersRequest->validate($role, $username)) {
@@ -104,9 +96,9 @@ class Users extends Controller
      *
      * @return void
      */
-    public function delete()
+    public function delete(Request $request)
     {
-        $account = $this->request->input('account');
+        $account = $request->input('account');
 
         try {
             $this->database->deleteUser($account);

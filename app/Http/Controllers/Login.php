@@ -22,11 +22,6 @@ class Login extends Controller
     private $redirect;
 
     /**
-     * @var Request $request;
-     */
-    private $request;
-
-    /**
      * @var Log $logger;
      */
     private $logger;
@@ -55,7 +50,6 @@ class Login extends Controller
      * Login Constructor
      *
      * @param Redirect $redirect
-     * @param Request $request
      * @param Log $logger
      * @param Session $session
      * @param Cookie $cookie
@@ -64,7 +58,6 @@ class Login extends Controller
      */
     public function __construct(
         Redirect $redirect,
-        Request $request,
         Log $logger,
         Session $session,
         Cookie $cookie,
@@ -72,7 +65,6 @@ class Login extends Controller
         User $user
     ) {
         $this->redirect = $redirect;
-        $this->request = $request;
         $this->logger = $logger;
         $this->session = $session;
         $this->cookie = $cookie;
@@ -85,14 +77,14 @@ class Login extends Controller
      *
      * @return mixed
      */
-    public function index(): mixed
+    public function index(Request $request): mixed
     {
         if (IsAuthenticatedMiddleware::handle()) {
             $this->redirect->to('/dashboard');
         }
 
-        if ($this->request->isPost()) {
-            return $this->login('a');
+        if ($request->isPost()) {
+            return $this->login($request);
         }
 
         return $this->view('auth/login');
@@ -103,9 +95,9 @@ class Login extends Controller
      *
      * @return void
      */
-    public function login(): void
+    public function login(Request $request): void
     {
-        $credentials = $this->request->all();
+        $credentials = $request->all();
 
         try {
             $this->database->connect($credentials);
