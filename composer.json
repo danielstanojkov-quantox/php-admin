@@ -7,7 +7,9 @@
     }
   ],
   "require": {
-    "nesbot/carbon": "^2.47"
+    "nesbot/carbon": "^2.47",
+    "monolog/monolog": "^2.2",
+    "php-di/php-di": "^6.3"
   },
   "autoload": {
     "psr-4": {

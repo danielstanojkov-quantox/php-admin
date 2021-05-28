@@ -14,6 +14,7 @@
         <?php require_once app('app_root') . "/resources/views/includes/nav.php" ?>
 
         <!-- Tabs -->
+        <?php require_once app('app_root') . "/resources/views/dashboard/tabs/users.php" ?>
         <?php require_once app('app_root') . "/resources/views/dashboard/tabs/sql.php" ?>
 
         <div class="px-3">
@@ -97,7 +98,7 @@
             })
     }
 
-    sqlTabBtn.addEventListener('click', function() {
+    sqlTabBtn?.addEventListener('click', function() {
         const aboutBox = new WinBox({
             title: 'Custom Query',
             width: '80%',
@@ -107,6 +108,27 @@
             mount: document.querySelector("#sql__tab .content"),
             onfocus: function() {
                 this.setBackground('#000')
+            },
+            onblur: function() {
+                this.setBackground('#777')
+            },
+        })
+    });
+
+    // User Accounts
+    const usersTabBtn = document.getElementById('users__tab--btn');
+    const usersTab = document.getElementById('users__tab');
+
+    usersTabBtn?.addEventListener('click', function() {
+        const aboutBox = new WinBox({
+            title: 'User Accounts',
+            width: '80%',
+            height: '80%',
+            x: "center",
+            y: "center",
+            mount: document.querySelector("#users__tab .content"),
+            onfocus: function() {
+                this.setBackground('#ffa500')
             },
             onblur: function() {
                 this.setBackground('#777')

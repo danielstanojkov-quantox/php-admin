@@ -10,18 +10,41 @@ use App\Libraries\Controller;
 class Export extends Controller
 {
     /**
+     *
+     * @var Redirect $redirect
+     */
+    private $redirect;
+
+    /**
+     *
+     * @var Auth $authentication
+     */
+    private $authentication;
+
+    /**
+     * Api Contructor
+     *
+     * @param Request $request
+     */
+    public function __construct(Redirect $redirect, Auth $authentication)
+    {
+        $this->redirect = $redirect;
+        $this->authentication = $authentication;
+    }
+
+    /**
      * Handles exporting databases
      *
      * @return void
      */
-    public function index(): void
+    public function index(Request $request): void
     {
-        if (!Request::isPost()) {
-            Redirect::to('/dashboard');
+        if (!$request->isPost()) {
+            $this->redirect->to('/dashboard');
         }
 
-        $database = Request::input('db_name');
-        $user = Auth::username();
+        $database = $request->input('db_name');
+        $user = $this->authentication->username();
 
         $filename = "$database.sql";
         $mime = "application/json";

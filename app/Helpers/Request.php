@@ -5,13 +5,29 @@ namespace App\Helpers;
 class Request
 {
     /**
+     *
+     * @var Server $server
+     */
+    private $server;
+
+    /**
+     * Request Constructor
+     *
+     * @param Server $server
+     */
+    public function __construct(Server $server)
+    {
+        $this->server = $server;
+    }
+
+    /**
      *  Check if the request is POST
      *
      * @return bool
      */
-    public static function isPost(): bool
+    public function isPost(): bool
     {
-        return Server::method() === 'POST';
+        return $this->server->method() === 'POST';
     }
 
     /**
@@ -19,9 +35,9 @@ class Request
      *
      * @return bool
      */
-    public static function isGet(): bool
+    public function isGet(): bool
     {
-        return Server::method() === 'GET';
+        return $this->server->method() === 'GET';
     }
 
     /**
@@ -29,9 +45,9 @@ class Request
      *
      * @return mixed
      */
-    public static function all(): mixed
+    public function all(): mixed
     {
-        switch (Server::method()) {
+        switch ($this->server->method()) {
             case 'POST':
                 return filter_input_array(INPUT_POST);
             case 'GET':
@@ -48,9 +64,9 @@ class Request
      * @param string $field
      * @return mixed
      */
-    public static function input(string $field): mixed
+    public function input(string $field): mixed
     {
-        return static::all()[$field] ?? null;
+        return $this->all()[$field] ?? null;
     }
 
     /**
@@ -58,9 +74,9 @@ class Request
      *
      * @return bool
      */
-    public static function has($parameter): bool
+    public function has($parameter): bool
     {
-        return key_exists($parameter, static::all() ?? []);
+        return key_exists($parameter, $this->all() ?? []);
     }
 
     /**
@@ -69,7 +85,7 @@ class Request
      * @param string $filename
      * @return array
      */
-    public static function file(string $filename): array
+    public function file(string $filename): array
     {
         return $_FILES[$filename];
     }
@@ -80,7 +96,7 @@ class Request
      * @param string $filename
      * @return bool
      */
-    public static function fileExists(string $filename): bool
+    public function fileExists(string $filename): bool
     {
         return isset($_FILES[$filename]);
     }

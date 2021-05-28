@@ -10,7 +10,7 @@ class Redirect
      * @param string $uri
      * @return void
      */
-    public static function to(string $uri): void
+    public function to(string $uri): void
     {
         $uri = app('url_root') . $uri;
         header("Location: $uri");
