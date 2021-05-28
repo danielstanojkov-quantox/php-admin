@@ -5,14 +5,37 @@ namespace App\Helpers;
 class Auth
 {
     /**
+     *
+     * @var UserStorage $storage
+     */
+    private $storage;
+
+    /**
+     *
+     * @var Cookie $cookie
+     */
+    private $cookie;
+
+    /**
+     * Undocumented function
+     *
+     * @param UserStorage $storage
+     * @param Cookie $cookie
+     */
+    public function __construct(UserStorage $storage, Cookie $cookie)
+    {
+        $this->storage = $storage;
+        $this->cookie = $cookie;
+    }
+
+    /**
      *  Authenticated user's host
      *
      * @return string
      */
-    public static function host(): string
+    public function host(): string
     {
-        $user = static::getUser();
-        return $user->host;
+        return $this->getUser()->host;
     }
 
     /**
@@ -20,10 +43,9 @@ class Auth
      *
      * @return string
      */
-    public static function username(): string
+    public function username(): string
     {
-        $user = static::getUser();
-        return $user->username;
+        return $this->getUser()->username;
     }
 
     /**
@@ -31,8 +53,10 @@ class Auth
      *
      * @return object
      */
-    protected static function getUser(): object
+    protected function getUser(): object
     {
-        return UserStorage::getUserById(Cookie::get('user_id'));
+        return $this->storage->getUserById(
+            $this->cookie->get('user_id')
+        );
     }
 }

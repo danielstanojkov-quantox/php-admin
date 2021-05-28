@@ -10,19 +10,26 @@ class Log
     /**
      * Logger instance
      *
-     * @var mixed
+     * @var Logger
      */
-    public static $logger = null;
+    public $logger;
+
+    /**
+     *
+     * @var File $file
+     */
+    private $file;
 
     /**
      * Log constructor
      */
-    public function __construct()
+    public function __construct(File $file)
     {
+        $this->file = $file;
         $this->createLogFile();
 
-        static::$logger = new Logger('phpAdmin');
-        static::$logger->pushHandler(new StreamHandler(app('logs'), Logger::DEBUG));
+        $this->logger = new Logger('phpAdmin');
+        $this->logger->pushHandler(new StreamHandler(app('logs'), Logger::DEBUG));
     }
 
     /**
@@ -32,26 +39,12 @@ class Log
      */
     public function createLogFile(): void
     {
-        if (File::exists(app('logs'))) {
+        if ($this->file->exists(app('logs'))) {
             return;
         }
 
-        File::makeDirectory('storage/logs');
-        File::makeFile('storage/logs/phpAdmin.log', '');
-    }
-
-    /**
-     * Get instance method
-     *
-     * @return object
-     */
-    public static function getInstance(): object
-    {
-        if (static::$logger == null) {
-            new Log;
-        }
-
-        return static::$logger;
+        $this->file->makeDirectory('storage/logs');
+        $this->file->makeFile('storage/logs/phpAdmin.log', '');
     }
 
     /**
@@ -60,10 +53,9 @@ class Log
      * @param string $message
      * @return void
      */
-    public static function error(string $message): void
+    public function error(string $message): void
     {
-        $logger = static::getInstance();
-        $logger->error($message);
+        $this->logger->error($message);
     }
 
     /**
@@ -72,10 +64,9 @@ class Log
      * @param string $message
      * @return void
      */
-    public static function warning(string $message): void
+    public function warning(string $message): void
     {
-        $logger = static::getInstance();
-        $logger->warning($message);
+        $this->logger->warning($message);
     }
 
     /**
@@ -84,9 +75,8 @@ class Log
      * @param string $message
      * @return void
      */
-    public static function info(string $message): void
+    public function info(string $message): void
     {
-        $logger = static::getInstance();
-        $logger->info($message);
+        $this->logger->info($message);
     }
 }

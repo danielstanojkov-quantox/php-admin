@@ -13,36 +13,82 @@ use App\Libraries\Database;
 class Users extends Controller
 {
     /**
+     * @var Redirect $redirect;
+     */
+    private $redirect;
+
+    /**
+     * @var Session $session;
+     */
+    private $session;
+
+    /**
+     * @var Log $logger;
+     */
+    private $logger;
+
+    /**
+     * @var Database $database;
+     */
+    private $database;
+
+    /**
+     * @var CreateUsersRequest $usersRequest;
+     */
+    private $usersRequest;
+
+    /**
+     * Users Constructor
+     *
+     * @param Redirect $redirect
+     * @param Session $session
+     * @param Log $logger
+     * @param Database $database
+     * @param CreateUsersRequest $usersRequest
+     */
+    public function __construct(
+        Redirect $redirect,
+        Session $session,
+        Log $logger,
+        Database $database,
+        CreateUserRequest $usersRequest
+    ) {
+        $this->redirect = $redirect;
+        $this->session = $session;
+        $this->logger = $logger;
+        $this->database = $database;
+        $this->usersRequest = $usersRequest;
+    }
+
+    /**
      * Handles creating new user accounts
      *
      * @return void
      */
-    public function store(): void
+    public function store(Request $request): void
     {
-        $username = Request::input('username');
-        $password = Request::input('password');
-        $role = Request::input('role');
+        $username = $request->input('username');
+        $password = $request->input('password');
+        $role = $request->input('role');
 
-        $dbName = Request::input('db_name');
+        $dbName = $request->input('db_name');
         $uri = $dbName ? "/dashboard?db_name=$dbName" : '/dashboard';
 
-        if (!CreateUserRequest::validate($role, $username)) {
-            Session::flash('account_username', $username);
-            Redirect::to($uri);
+        if (!$this->usersRequest->validate($role, $username)) {
+            $this->session->flash('account_username', $username);
+            $this->redirect->to($uri);
         }
-
-        $db = Database::getInstance();
 
         try {
-            $db->createUser(app('host'), $username, $password, $role);
-            Log::info("Account $username@" . app('host') . " created successfuly");
-            Session::flash('registration_successfull', 'User has been created successfully');
+            $this->database->createUser(app('host'), $username, $password, $role);
+            $this->logger->info("Account $username@" . app('host') . " created successfuly");
+            $this->session->flash('registration_successfull', 'User has been created successfully');
         } catch (\Throwable $th) {
-            Session::flash('registration_failed', $th->getMessage());
-            Log::error($th->getMessage());
+            $this->session->flash('registration_failed', $th->getMessage());
+            $this->logger->error($th->getMessage());
         }
 
-        Redirect::to($uri);
+        $this->redirect->to($uri);
     }
 
     /**
@@ -50,21 +96,19 @@ class Users extends Controller
      *
      * @return void
      */
-    public function delete()
+    public function delete(Request $request)
     {
-        $account = Request::input('account');
-
-        $db = Database::getInstance();
+        $account = $request->input('account');
 
         try {
-            $db->deleteUser($account);
-            Session::flash('user_deleted_success', 'User account has been removed successfully');
-            Log::info("Account $account deleted successfuly");
+            $this->database->deleteUser($account);
+            $this->session->flash('user_deleted_success', 'User account has been removed successfully');
+            $this->logger->info("Account $account deleted successfuly");
         } catch (\Throwable $th) {
-            Session::flash('user_deleted_error', $th->getMessage());
-            Log::error($th->getMessage());
+            $this->session->flash('user_deleted_error', $th->getMessage());
+            $this->logger->error($th->getMessage());
         }
 
-        Redirect::to('/dashboard');
+        $this->redirect->to('/dashboard');
     }
 }

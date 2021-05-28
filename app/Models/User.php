@@ -7,55 +7,36 @@ use Carbon\Carbon;
 
 class User
 {
-    /**
-     * User's Host
-     *
-     * @var string
+    /**     
+     * @var UserStorage $storage
      */
-    private $host;
-
-    /**
-     * Authenticated user's username
-     *
-     * @var string
-     */
-    private $username;
-
-    /**
-     * Authenticated user's password
-     *
-     * @var string
-     */
-    private $password;
+    public $storage;
 
     /**
      * User Constructor
      *
-     * @param array $credentials
+     * @param UserStorage $storage
      */
-    public function __construct(array $credentials)
+    public function __construct(UserStorage $storage)
     {
-        $this->host = $credentials['host'];
-        $this->username = $credentials['username'];
-        $this->password = $credentials['password'];
+        $this->storage = $storage;
     }
 
     /**
      * Creates a new user
-     *
+     * @param array $credentials
      * @return array
      */
-    public function save(): array
+    public function save(array $credentials): array
     {
         $user = [
             'id' => Carbon::now()->timestamp,
-            'host' => $this->host,
-            'username' => $this->username,
-            'password' => $this->password
+            'host' => $credentials['host'],
+            'username' => $credentials['username'],
+            'password' => $credentials['password']
         ];
 
-        UserStorage::add($user);
-
+        $this->storage->add($user);
         return $user;
     }
 }

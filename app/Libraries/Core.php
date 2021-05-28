@@ -2,6 +2,10 @@
 
 namespace App\Libraries;
 
+use App\Helpers\Request;
+use App\Helpers\Server;
+use DI\ContainerBuilder;
+
 /*
 * Creates URL & loads core controller
 * URL FORMAT - /controller/method/params
@@ -9,6 +13,7 @@ namespace App\Libraries;
 
 class Core
 {
+  public Request $request;
   /**
    * Current Controller
    *
@@ -42,8 +47,12 @@ class Core
       unset($url[0]);
     }
 
+    $builder = new ContainerBuilder();
+    $container = $builder->build();
+
+    $this->request = $container->get(Request::class);
     $class = "App\Http\Controllers\\" . $this->currentController;
-    $this->currentController = new $class;
+    $this->currentController = $container->get($class);
 
     if (isset($url[1])) {
       if (method_exists($this->currentController, $url[1])) {
@@ -54,7 +63,10 @@ class Core
 
     $this->params = $url ? array_values($url) : [];
 
-    call_user_func_array([$this->currentController, $this->currentMethod], $this->params);
+    call_user_func_array(
+      [$this->currentController, $this->currentMethod],
+      [$this->request, $this->params]
+    );
   }
 
   /**
